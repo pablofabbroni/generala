@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Generala — Contador MVP",
-  description: "Setup + contador manual + ranking final (MVP).",
+  title: "Generala Club",
+  description: "La mejor experiencia de Generala: Dados 3D, IA avanzada y modo anotador profesional.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

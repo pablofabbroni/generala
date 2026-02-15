@@ -53,7 +53,7 @@ export function PlayerCard({ player, onChange }: { player: Player; onChange: (pa
 
         {player.isCPU && gameMode === "digital" && (
           <div className="flex gap-1.5 p-1 rounded-xl bg-white/5 border border-white/5">
-            {(["easy", "medium"] as const).map((lv) => (
+            {(["easy", "medium", "hard"] as const).map((lv) => (
               <button
                 key={lv}
                 type="button"
@@ -65,7 +65,7 @@ export function PlayerCard({ player, onChange }: { player: Player; onChange: (pa
                     : "text-white/40 hover:text-white/60"
                 )}
               >
-                {lv === "easy" ? "Fácil" : "Medio"}
+                {lv === "easy" ? "Fácil" : lv === "hard" ? "Difícil" : "Medio"}
               </button>
             ))}
           </div>

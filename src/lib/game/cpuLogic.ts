@@ -58,17 +58,42 @@ function findBestCategory(
 }
 
 function getLockIndices(dice: DiceState[], difficulty: string): number[] {
-    if (difficulty === "easy") return []; // Easy doesn't lock for simplicity or locks randomly
+    if (difficulty === "easy") return [];
 
-    // Medium: lock numbers that are already paired
     const values = dice.map(d => d.value);
+
+    // Hard mode: check for straights or big games specifically
+    if (difficulty === "hard") {
+        // Simple straight check: if we have 4 distinct values that could form a straight, lock them
+        const distinct = Array.from(new Set(values)).sort();
+        if (distinct.length >= 4) {
+            // Check if they are consecutive (1,2,3,4 or 2,3,4,5 or 3,4,5,6)
+            for (let i = 0; i <= distinct.length - 4; i++) {
+                const sub = distinct.slice(i, i + 4);
+                if (sub[3] - sub[0] === 3) {
+                    // Lock these 4 dice
+                    return dice.reduce((acc, d, idx) => {
+                        if (sub.includes(d.value) && acc.filter(i => dice[i].value === d.value).length === 0) {
+                            acc.push(idx);
+                        }
+                        return acc;
+                    }, [] as number[]).slice(0, 4);
+                }
+            }
+        }
+    }
+
     const counts = values.reduce((acc, v) => {
         acc[v] = (acc[v] || 0) + 1;
         return acc;
     }, {} as Record<number, number>);
 
-    const maxVal = Object.entries(counts).reduce((a, b) => b[1] > a[1] ? b : a)[0];
-    const target = parseInt(maxVal);
+    const maxEntry = Object.entries(counts).reduce((a, b) => b[1] > a[1] ? b : a);
+    const target = parseInt(maxEntry[0]);
+    const count = maxEntry[1];
+
+    // In Medium/Hard, don't lock if we only have 1 (too random), unless we are desperate
+    if (count < 2 && difficulty === "medium") return [];
 
     return dice.map((d, i) => d.value === target ? i : -1).filter(i => i !== -1);
 }

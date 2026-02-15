@@ -2,7 +2,7 @@
 
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ModeCard } from "@/components/dashboard/ModeCard";
-import { Calculator, Dices, Trophy, Users, Globe } from "lucide-react";
+import { Calculator, Dices, Trophy, BookOpen, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 
@@ -19,7 +19,7 @@ export default function DashboardPage() {
         <PageContainer className="flex flex-col items-center justify-center min-h-[80vh] gap-12 py-12">
             <div className="text-center space-y-4">
                 <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white uppercase italic">
-                    Generala <span className="text-amber-500">Casino</span>
+                    Generala <span className="text-amber-500">Club</span>
                 </h1>
                 <p className="text-white/40 font-medium tracking-widest uppercase text-sm">
                     Elegí tu mesa y empezá a jugar
@@ -27,6 +27,14 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
+                <ModeCard
+                    title="Reglas"
+                    description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                    icon={BookOpen}
+                    variant="glass"
+                    onClick={() => router.push("/rules")}
+                />
+
                 <ModeCard
                     title="Anotador"
                     description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
@@ -36,25 +44,17 @@ export default function DashboardPage() {
                 />
 
                 <ModeCard
-                    title="Casino Digital"
-                    description="Entrá a la mesa digital con dados 3D, sonidos premium y modo solitario vs CPU."
+                    title="Juega ahora"
+                    description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
                     icon={Dices}
                     variant="gold"
-                    onClick={() => handleModeSelect("digital", "/play/selection")}
+                    onClick={() => router.push("/play/selection")}
                 />
 
                 <ModeCard
-                    title="Armar Sala"
-                    description="Invitá a tus amigos a tu propia mesa privada de casino."
-                    icon={Users}
-                    disabled
-                    badge="Próximamente"
-                />
-
-                <ModeCard
-                    title="Matchmaking"
-                    description="Competí contra jugadores de todo el mundo y subí en el ranking."
-                    icon={Globe}
+                    title="Eventos semanales"
+                    description="Participá en torneos exclusivos y ganá premios únicos cada semana."
+                    icon={Calendar}
                     disabled
                     badge="Próximamente"
                 />

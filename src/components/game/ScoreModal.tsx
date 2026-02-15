@@ -10,7 +10,7 @@ type Chip = { label: string; value: number; kind?: "normal" | "served" | "strike
 
 function faceOptions(face: number): Chip[] {
   const chips: Chip[] = [{ label: "Tachar", value: 0, kind: "strike" }];
-  for (let k = 1; k <= 5; k++) chips.push({ label: String(face * k), value: face * k });
+  for (let k = 1; k <= 6; k++) chips.push({ label: String(face * k), value: face * k });
   return chips;
 }
 
