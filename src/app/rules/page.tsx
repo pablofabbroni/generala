@@ -86,7 +86,7 @@ export default function RulesPage() {
                                     <td className="px-6 py-4">—</td>
                                 </tr>
                                 <tr>
-                                    <td className="px-6 py-4 font-medium">Escalera Menor</td>
+                                    <td className="px-6 py-4 font-medium">Escalera Menor*</td>
                                     <td className="px-6 py-4">15 pts</td>
                                     <td className="px-6 py-4 text-emerald-400">20 pts</td>
                                 </tr>
@@ -111,7 +111,7 @@ export default function RulesPage() {
                                     <td className="px-6 py-4">—</td>
                                 </tr>
                                 <tr>
-                                    <td className="px-6 py-4 font-medium text-amber-500">Chance</td>
+                                    <td className="px-6 py-4 font-medium text-amber-500">Chance*</td>
                                     <td className="px-6 py-4">Suma de los 5 dados</td>
                                     <td className="px-6 py-4">—</td>
                                 </tr>
@@ -123,7 +123,7 @@ export default function RulesPage() {
                             </tbody>
                         </table>
                     </div>
-                    <p className="text-[10px] text-white/30 italic">* Si la variante está activada. Nota: Jugar con Escalera Menor habilita la opción de Doble Generala.</p>
+                    <p className="text-[10px] text-white/30 italic">*si la variante está activada</p>
                 </section>
 
                 {/* Variants Section */}
