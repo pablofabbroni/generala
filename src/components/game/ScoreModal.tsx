@@ -35,6 +35,10 @@ function categoryChips(category: Category): { chips: Chip[]; allowCustom: boolea
       return { chips: [{ label: "Tachar", value: 0, kind: "strike" }, { label: "50", value: 50 }], allowCustom: true };
     case "doubleGenerala":
       return { chips: [{ label: "Tachar", value: 0, kind: "strike" }, { label: "100", value: 100 }], allowCustom: true };
+    case "chance":
+      return { chips: [{ label: "Tachar", value: 0, kind: "strike" }], allowCustom: true };
+    default:
+      return { chips: [{ label: "Tachar", value: 0, kind: "strike" }], allowCustom: true };
   }
 }
 
@@ -113,8 +117,8 @@ export function ScoreModal({
                 c.kind === "strike"
                   ? "border-rose-400/20 bg-rose-500/10 text-rose-200 hover:bg-rose-500/15"
                   : c.kind === "served"
-                  ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/15"
-                  : "border-white/10 bg-white/5 text-white/85 hover:bg-white/10",
+                    ? "border-emerald-300/20 bg-emerald-400/10 text-emerald-100 hover:bg-emerald-400/15"
+                    : "border-white/10 bg-white/5 text-white/85 hover:bg-white/10",
               ].join(" ")}
             >
               {c.label}
