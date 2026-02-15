@@ -111,6 +111,11 @@ export default function RulesPage() {
                                     <td className="px-6 py-4">—</td>
                                 </tr>
                                 <tr>
+                                    <td className="px-6 py-4 font-medium text-amber-500">Chance</td>
+                                    <td className="px-6 py-4">Suma total</td>
+                                    <td className="px-6 py-4">—</td>
+                                </tr>
+                                <tr>
                                     <td className="px-6 py-4 font-medium text-amber-500">Doble Generala*</td>
                                     <td className="px-6 py-4">100 pts</td>
                                     <td className="px-6 py-4">—</td>
@@ -129,6 +134,13 @@ export default function RulesPage() {
                     </h2>
 
                     <div className="space-y-4">
+                        <div className="flex gap-4 p-4 rounded-3xl bg-white/5 border border-white/5">
+                            <div className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+                            <div>
+                                <h4 className="font-bold text-white">Chance / Comodín</h4>
+                                <p className="text-xs text-white/40">Una categoría flexible que suma el valor de los 5 dados, disponible en todas las modalidades.</p>
+                            </div>
+                        </div>
                         <div className="flex gap-4 p-4 rounded-3xl bg-white/5 border border-white/5">
                             <div className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
                             <div>
