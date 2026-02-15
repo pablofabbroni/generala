@@ -19,7 +19,7 @@ export const categoryMeta: Record<Category, { label: string }> = {
 
 const baseCategories: Category[] = [
   "ones", "twos", "threes", "fours", "fives", "sixes",
-  "majorStraight", "full", "poker", "generala", "chance",
+  "majorStraight", "full", "poker", "generala",
 ];
 
 export function getCategories(v: Variants): Category[] {
@@ -33,6 +33,10 @@ export function getCategories(v: Variants): Category[] {
   if (v.doubleGenerala) {
     const idx = cats.indexOf("generala");
     cats.splice(Math.max(idx + 1, 0), 0, "doubleGenerala");
+  }
+
+  if (v.chance) {
+    cats.push("chance");
   }
 
   return cats;

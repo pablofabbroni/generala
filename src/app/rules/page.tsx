@@ -112,7 +112,7 @@ export default function RulesPage() {
                                 </tr>
                                 <tr>
                                     <td className="px-6 py-4 font-medium text-amber-500">Chance</td>
-                                    <td className="px-6 py-4">Suma total</td>
+                                    <td className="px-6 py-4">Suma de los 5 dados</td>
                                     <td className="px-6 py-4">—</td>
                                 </tr>
                                 <tr>

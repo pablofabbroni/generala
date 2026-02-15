@@ -41,6 +41,12 @@ export function VariantsPanel({ value, onChange }: { value: Variants; onChange: 
           checked={value.upperBonus63}
           onChange={(v) => onChange({ upperBonus63: v })}
         />
+        <Row
+          title="Chance"
+          desc="Habilita la categoría comodín que suma los 5 dados."
+          checked={value.chance}
+          onChange={(v) => onChange({ chance: v })}
+        />
         <div className="text-[11px] text-white/45 px-1">
           Nota: “Servido +5” está disponible como chip dentro del contador (no como variante).
         </div>

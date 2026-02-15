@@ -10,6 +10,7 @@ export type Variants = {
   minorStraight: boolean;
   doubleGenerala: boolean; // agrega fila "Generala doble"
   upperBonus63: boolean;
+  chance: boolean;
 };
 
 export type Player = {

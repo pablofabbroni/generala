@@ -12,6 +12,7 @@ const defaultVariants: Variants = {
   minorStraight: false,
   doubleGenerala: false,
   upperBonus63: true,
+  chance: true,
 };
 
 const defaultPlayers = (): Player[] => ([
