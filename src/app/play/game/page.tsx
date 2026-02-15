@@ -11,9 +11,11 @@ import { getRanking } from "@/lib/scoring";
 import { DiceTray } from "@/components/game/DiceTray";
 import { TurnIndicator } from "@/components/game/TurnIndicator";
 import { GameOverModal } from "@/components/game/GameOverModal";
+import { ScoreModal } from "@/components/game/ScoreModal";
 import { calculatePotentialScores } from "@/lib/game/scoreCalculator";
 import { getCPUMove } from "@/lib/game/cpuLogic";
 import { useSound } from "@/hooks/useSound";
+import type { Category } from "@/types/game";
 
 export default function GamePage() {
   const router = useRouter();
@@ -32,7 +34,12 @@ export default function GamePage() {
     resetAll,
     isMuted,
     toggleMute,
-    gameMode
+    gameMode,
+    openModal,
+    closeModal,
+    modal,
+    setScore,
+    clearScore
   } = useGameStore();
 
   const { playSound } = useSound();
@@ -67,7 +74,6 @@ export default function GamePage() {
         );
 
         if (move.action === "roll") {
-          // Note: DiceTray handles rolling sound/animation internally
           rollDice();
         } else if (move.action === "select" && move.category) {
           playSound("scoreSelect");
@@ -89,6 +95,10 @@ export default function GamePage() {
     color: r.color,
     total: r.total
   })), [ranking]);
+
+  const selectedPlayer = players.find((p) => p.id === modal?.playerId) ?? null;
+  const selectedCategory = (modal?.category ?? null) as Category | null;
+  const currentValue = selectedPlayer && selectedCategory ? scores[selectedPlayer.id]?.[selectedCategory] : undefined;
 
   if (phase === "setup") return null;
 
@@ -145,7 +155,11 @@ export default function GamePage() {
             activePlayerId={activePlayerId}
             potentialScores={isUserTurn && rollsLeft < 3 && gameMode === "digital" ? potentialScores : {}}
             onCellClick={(pid, cat) => {
-              const canSelect = pid === activePlayerId && isUserTurn && (gameMode === "analog" || rollsLeft < 3);
+              if (gameMode === "analog") {
+                openModal(pid, cat);
+                return;
+              }
+              const canSelect = pid === activePlayerId && isUserTurn && rollsLeft < 3;
               if (canSelect) {
                 playSound("scoreSelect");
                 selectCategory(cat);
@@ -158,6 +172,23 @@ export default function GamePage() {
       <div className="lg:hidden">
         <TotalsBar players={players} scores={scores} variants={variants} />
       </div>
+
+      <ScoreModal
+        open={!!modal}
+        onOpenChange={(v) => { if (!v) closeModal(); }}
+        player={selectedPlayer}
+        category={selectedCategory}
+        variants={variants}
+        currentValue={currentValue}
+        onSave={(value) => {
+          if (!selectedPlayer || !selectedCategory) return;
+          setScore(selectedPlayer.id, selectedCategory, value);
+        }}
+        onClear={() => {
+          if (!selectedPlayer || !selectedCategory) return;
+          clearScore(selectedPlayer.id, selectedCategory);
+        }}
+      />
 
       <GameOverModal
         open={phase === "gameOver"}

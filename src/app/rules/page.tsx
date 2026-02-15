@@ -81,7 +81,17 @@ export default function RulesPage() {
                             </thead>
                             <tbody className="divide-y divide-white/5 text-white/80">
                                 <tr>
-                                    <td className="px-6 py-4 font-medium">Escalera</td>
+                                    <td className="px-6 py-4 font-medium">Números (1 al 6)</td>
+                                    <td className="px-6 py-4">Dados iguales</td>
+                                    <td className="px-6 py-4">—</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-6 py-4 font-medium">Escalera Menor</td>
+                                    <td className="px-6 py-4">15 pts</td>
+                                    <td className="px-6 py-4 text-emerald-400">20 pts</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-6 py-4 font-medium">Escalera Mayor</td>
                                     <td className="px-6 py-4">20 pts</td>
                                     <td className="px-6 py-4 text-emerald-400">25 pts</td>
                                 </tr>
@@ -108,7 +118,7 @@ export default function RulesPage() {
                             </tbody>
                         </table>
                     </div>
-                    <p className="text-[10px] text-white/30 italic">* Si la variante está activada.</p>
+                    <p className="text-[10px] text-white/30 italic">* Si la variante está activada. Nota: Jugar con Escalera Menor habilita la opción de Doble Generala.</p>
                 </section>
 
                 {/* Variants Section */}

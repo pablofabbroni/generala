@@ -64,7 +64,13 @@ export const useGameStore = create<GameStore>()(
       gameMode: "digital",
 
       toggleMute: () => set((s: any) => ({ isMuted: !s.isMuted })),
-      setGameMode: (gameMode: GameMode) => set({ gameMode }),
+      setGameMode: (gameMode: GameMode) => set((s: GameState) => {
+        // When switching to analog, convert all CPUs to human players
+        const players = gameMode === "analog"
+          ? s.players.map(p => ({ ...p, isCPU: false }))
+          : s.players;
+        return { gameMode, players };
+      }),
 
       setVariants: (v: Partial<Variants>) => set((s: GameState) => ({ variants: { ...s.variants, ...v } })),
 
@@ -152,12 +158,28 @@ export const useGameStore = create<GameStore>()(
         };
       }),
 
-      setScore: (playerId: string, category: Category, value: number) => set((s: GameState) => ({
-        scores: {
+      setScore: (playerId: string, category: Category, value: number) => set((s: GameState) => {
+        const nextScores = {
           ...s.scores,
           [playerId]: { ...(s.scores[playerId] ?? {}), [category]: value },
-        },
-      })),
+        };
+
+        const currentPlayerIdx = s.players.findIndex(p => p.id === s.activePlayerId);
+        const nextPlayerIdx = (currentPlayerIdx + 1) % s.players.length;
+        const nextPlayerId = s.players[nextPlayerIdx].id;
+
+        // Check if game is finished
+        const categories = getCategories(s.variants);
+        const isFinished = s.players.every((p: Player) =>
+          categories.every((cat) => (p.id === s.activePlayerId && cat === category) || nextScores[p.id]?.[cat] !== undefined)
+        );
+
+        return {
+          scores: nextScores,
+          activePlayerId: nextPlayerId,
+          phase: isFinished ? "gameOver" : "playing",
+        };
+      }),
 
       clearScore: (playerId: string, category: Category) => set((s: GameState) => {
         const current = { ...(s.scores[playerId] ?? {}) };
