@@ -2,87 +2,169 @@
 import * as React from "react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft, Crown } from "lucide-react";
+import { ArrowLeft, Crown, Settings, Volume2, VolumeX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/gameStore";
 import { ScoreTable } from "@/components/game/ScoreTable";
-import { ScoreModal } from "@/components/game/ScoreModal";
 import { TotalsBar } from "@/components/game/TotalsBar";
 import { getRanking } from "@/lib/scoring";
-import { RankingModal } from "@/components/game/RankingModal";
-import type { Category } from "@/types/game";
+import { DiceTray } from "@/components/game/DiceTray";
+import { TurnIndicator } from "@/components/game/TurnIndicator";
+import { GameOverModal } from "@/components/game/GameOverModal";
+import { calculatePotentialScores } from "@/lib/game/scoreCalculator";
+import { getCPUMove } from "@/lib/game/cpuLogic";
+import { useSound } from "@/hooks/useSound";
 
 export default function GamePage() {
   const router = useRouter();
-  const players = useGameStore((s) => s.players);
-  const variants = useGameStore((s) => s.variants);
-  const scores = useGameStore((s) => s.scores);
-  const modal = useGameStore((s) => s.modal);
-  const openModal = useGameStore((s) => s.openModal);
-  const closeModal = useGameStore((s) => s.closeModal);
-  const setScore = useGameStore((s) => s.setScore);
-  const clearScore = useGameStore((s) => s.clearScore);
-  const isFinished = useGameStore((s) => s.isFinished);
-  const resetAll = useGameStore((s) => s.resetAll);
+  const {
+    phase,
+    players,
+    variants,
+    scores,
+    activePlayerId,
+    dice,
+    rollsLeft,
+    startGame,
+    rollDice,
+    toggleDieLock,
+    selectCategory,
+    resetAll,
+    isMuted,
+    toggleMute
+  } = useGameStore();
 
-  const [showRanking, setShowRanking] = React.useState(false);
+  const { playSound } = useSound();
+  const [isCPUMoving, setIsCPUMoving] = React.useState(false);
 
+  // Initialize game if in setup phase
   React.useEffect(() => {
-    if (isFinished()) setShowRanking(true);
-  }, [scores, isFinished]);
+    if (phase === "setup") {
+      startGame();
+    }
+  }, [phase, startGame]);
 
-  const selectedPlayer = players.find((p) => p.id === modal?.playerId) ?? null;
-  const selectedCategory = (modal?.category ?? null) as Category | null;
-  const currentValue = selectedPlayer && selectedCategory ? scores[selectedPlayer.id]?.[selectedCategory] : undefined;
+  const activePlayer = players.find((p) => p.id === activePlayerId) || players[0];
+  const isUserTurn = activePlayer && !activePlayer.isCPU;
 
+  // CPU Logic Loop
+  React.useEffect(() => {
+    if (phase === "playing" && activePlayer?.isCPU && !isCPUMoving) {
+      const runCPUMove = async () => {
+        setIsCPUMoving(true);
+
+        // Add a small delay for "thinking" feel
+        await new Promise(r => setTimeout(r, 1000));
+
+        const move = getCPUMove(
+          dice,
+          rollsLeft,
+          scores[activePlayer.id] || {},
+          activePlayer.difficulty || "easy",
+          variants
+        );
+
+        if (move.action === "roll") {
+          // Note: DiceTray handles rolling sound/animation internally
+          rollDice();
+        } else if (move.action === "select" && move.category) {
+          playSound("scoreSelect");
+          selectCategory(move.category);
+        }
+
+        setIsCPUMoving(false);
+      };
+
+      runCPUMove();
+    }
+  }, [phase, activePlayerId, rollsLeft, dice, isCPUMoving, activePlayer, scores, variants, rollDice, selectCategory, playSound]);
+
+  const potentialScores = React.useMemo(() => calculatePotentialScores(dice), [dice]);
   const ranking = React.useMemo(() => getRanking(players, scores, variants), [players, scores, variants]);
+  const formattedRanking = React.useMemo(() => ranking.map(r => ({
+    playerId: r.id,
+    name: r.name,
+    color: r.color,
+    total: r.total
+  })), [ranking]);
+
+  if (phase === "setup") return null;
 
   return (
     <PageContainer className="space-y-6 pb-28">
       <div className="flex items-center justify-between gap-3">
         <Button variant="ghost" onClick={() => router.push("/play/setup")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Setup
+          Salir
         </Button>
-        <Button variant="secondary" onClick={() => setShowRanking(true)}>
-          <Crown className="mr-2 h-4 w-4" />
-          Ver ranking
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => toggleMute()}
+            className={isMuted ? "text-white/40" : "text-amber-500"}
+          >
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+          </Button>
+          <Button variant="secondary" onClick={() => resetAll()}>
+            <Settings className="mr-2 h-4 w-4" />
+            Reiniciar
+          </Button>
+        </div>
       </div>
 
-      <ScoreTable
-        players={players}
-        scores={scores}
-        variants={variants}
-        onCellClick={(playerId, category) => openModal(playerId, category)}
-      />
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+        <div className="lg:col-span-4 space-y-6">
+          <TurnIndicator activePlayer={activePlayer} isCPU={isCPUMoving} />
 
-      <TotalsBar players={players} scores={scores} variants={variants} />
+          <div className="rounded-3xl bg-white/5 border border-white/10 p-4 shadow-2xl">
+            <DiceTray
+              dice={dice}
+              rollsLeft={rollsLeft}
+              onRoll={rollDice}
+              onToggleLock={toggleDieLock}
+              disabled={!isUserTurn || isCPUMoving}
+              isCPU={isCPUMoving}
+            />
+          </div>
 
-      <ScoreModal
-        open={!!modal}
-        onOpenChange={(v) => { if (!v) closeModal(); }}
-        player={selectedPlayer}
-        category={selectedCategory}
-        variants={variants}
-        currentValue={currentValue}
-        onSave={(value) => {
-          if (!selectedPlayer || !selectedCategory) return;
-          setScore(selectedPlayer.id, selectedCategory, value);
-        }}
-        onClear={() => {
-          if (!selectedPlayer || !selectedCategory) return;
-          clearScore(selectedPlayer.id, selectedCategory);
-        }}
-      />
+          <div className="hidden lg:block">
+            <TotalsBar players={players} scores={scores} variants={variants} />
+          </div>
+        </div>
 
-      <RankingModal
-        open={showRanking}
-        onOpenChange={setShowRanking}
-        ranking={ranking}
+        <div className="lg:col-span-8">
+          <ScoreTable
+            players={players}
+            scores={scores}
+            variants={variants}
+            activePlayerId={activePlayerId}
+            potentialScores={isUserTurn && rollsLeft < 3 ? potentialScores : {}}
+            onCellClick={(pid, cat) => {
+              if (pid === activePlayerId && isUserTurn && rollsLeft < 3) {
+                playSound("scoreSelect");
+                selectCategory(cat);
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="lg:hidden">
+        <TotalsBar players={players} scores={scores} variants={variants} />
+      </div>
+
+      <GameOverModal
+        open={phase === "gameOver"}
+        onOpenChange={(open) => { if (!open) resetAll(); }}
+        ranking={formattedRanking}
         onNewGame={() => {
           resetAll();
-          router.push("/play/setup");
+          startGame();
+        }}
+        onGoHome={() => {
+          resetAll();
+          router.push("/");
         }}
       />
     </PageContainer>

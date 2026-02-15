@@ -14,11 +14,12 @@ export const categoryMeta: Record<Category, { label: string }> = {
   poker: { label: "Poker" },
   generala: { label: "Generala" },
   doubleGenerala: { label: "Generala doble" },
+  chance: { label: "Chance" },
 };
 
 const baseCategories: Category[] = [
-  "ones","twos","threes","fours","fives","sixes",
-  "majorStraight","full","poker","generala",
+  "ones", "twos", "threes", "fours", "fives", "sixes",
+  "majorStraight", "full", "poker", "generala", "chance",
 ];
 
 export function getCategories(v: Variants): Category[] {

@@ -19,11 +19,7 @@ export function TotalsBar({ players, scores, variants }: { players: Player[]; sc
               <div key={p.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
                 <PlayerBadge name={p.name} color={p.color} />
                 <div className="text-right">
-                  {variants.upperBonus63 ? (
-                    <div className="text-[11px] text-white/60 tabular-nums">
-                      1..6: {up} {b ? `(+${b})` : ""}
-                    </div>
-                  ) : null}
+                  {/* Subtotal 1..6 hidden as per user request */}
                   <div className="text-sm font-semibold tabular-nums">{total}</div>
                 </div>
               </div>
