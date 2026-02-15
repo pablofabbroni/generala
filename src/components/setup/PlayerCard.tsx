@@ -4,10 +4,13 @@ import { Input } from "@/components/ui/Input";
 import type { Player } from "@/types/game";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/Switch";
+import { useGameStore } from "@/store/gameStore";
 
 const preset = ["#22c55e", "#3b82f6", "#f59e0b", "#ec4899", "#a855f7", "#06b6d4"];
 
 export function PlayerCard({ player, onChange }: { player: Player; onChange: (patch: Partial<Player>) => void }) {
+  const gameMode = useGameStore((s) => s.gameMode);
+
   return (
     <Card className="overflow-hidden border-white/10 bg-zinc-900/50">
       <CardHeader className="flex flex-row items-center justify-between gap-3 bg-white/5 py-4">
@@ -35,18 +38,20 @@ export function PlayerCard({ player, onChange }: { player: Player; onChange: (pa
           />
         </div>
 
-        <div className="flex items-center justify-between gap-3 rounded-xl bg-white/5 px-3 py-2 border border-white/5">
-          <div className="flex flex-col">
-            <span className="text-[11px] font-bold text-white/70 uppercase">¿Es CPU?</span>
-            <span className="text-[10px] text-white/40">Jugador automático</span>
+        {gameMode === "digital" && (
+          <div className="flex items-center justify-between gap-3 rounded-xl bg-white/5 px-3 py-2 border border-white/5">
+            <div className="flex flex-col">
+              <span className="text-[11px] font-bold text-white/70 uppercase">¿Es CPU?</span>
+              <span className="text-[10px] text-white/40">Jugador automático</span>
+            </div>
+            <Switch
+              checked={!!player.isCPU}
+              onCheckedChange={(v) => onChange({ isCPU: v, name: v ? `CPU ${player.name || ""}` : player.name.replace("CPU ", "") })}
+            />
           </div>
-          <Switch
-            checked={!!player.isCPU}
-            onCheckedChange={(v) => onChange({ isCPU: v, name: v ? `CPU ${player.name || ""}` : player.name.replace("CPU ", "") })}
-          />
-        </div>
+        )}
 
-        {player.isCPU && (
+        {player.isCPU && gameMode === "digital" && (
           <div className="flex gap-1.5 p-1 rounded-xl bg-white/5 border border-white/5">
             {(["easy", "medium"] as const).map((lv) => (
               <button

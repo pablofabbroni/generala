@@ -4,6 +4,7 @@ export type DiceState = {
 };
 
 export type GamePhase = "setup" | "playing" | "gameOver";
+export type GameMode = "digital" | "analog";
 
 export type Variants = {
   minorStraight: boolean;
@@ -29,6 +30,7 @@ export type ScoresByPlayer = Record<string, Partial<Record<Category, number>>>;
 
 export type GameState = {
   phase: GamePhase;
+  gameMode: GameMode;
   variants: Variants;
   players: Player[];
   scores: ScoresByPlayer;

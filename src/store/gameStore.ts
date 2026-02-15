@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Category, GameState, Player, Variants, GamePhase, DiceState } from "@/types/game";
+import type { Category, GameState, Player, Variants, GamePhase, DiceState, GameMode } from "@/types/game";
 import { uid } from "@/lib/utils";
 import { getCategories } from "@/lib/categories";
 import { calculatePotentialScores, isServido } from "@/lib/game/scoreCalculator";
@@ -27,6 +27,7 @@ type GameStore = GameState & {
   modal: ModalState;
   isMuted: boolean;
   toggleMute: () => void;
+  setGameMode: (mode: GameMode) => void;
   setVariants: (v: Partial<Variants>) => void;
   setPlayersCount: (n: number) => void;
   updatePlayer: (id: string, patch: Partial<Player>) => void;
@@ -60,8 +61,10 @@ export const useGameStore = create<GameStore>()(
       winnerId: null,
       modal: null,
       isMuted: false,
+      gameMode: "digital",
 
       toggleMute: () => set((s: any) => ({ isMuted: !s.isMuted })),
+      setGameMode: (gameMode: GameMode) => set({ gameMode }),
 
       setVariants: (v: Partial<Variants>) => set((s: GameState) => ({ variants: { ...s.variants, ...v } })),
 
@@ -187,7 +190,7 @@ export const useGameStore = create<GameStore>()(
     }),
     {
       name: "generala-v2-store",
-      version: 4,
+      version: 5,
     }
   )
 );

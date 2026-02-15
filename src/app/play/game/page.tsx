@@ -31,7 +31,8 @@ export default function GamePage() {
     selectCategory,
     resetAll,
     isMuted,
-    toggleMute
+    toggleMute,
+    gameMode
   } = useGameStore();
 
   const { playSound } = useSound();
@@ -49,6 +50,7 @@ export default function GamePage() {
 
   // CPU Logic Loop
   React.useEffect(() => {
+    if (gameMode === "analog") return; // No CPU in analog mode for now
     if (phase === "playing" && activePlayer?.isCPU && !isCPUMoving) {
       const runCPUMove = async () => {
         setIsCPUMoving(true);
@@ -77,7 +79,7 @@ export default function GamePage() {
 
       runCPUMove();
     }
-  }, [phase, activePlayerId, rollsLeft, dice, isCPUMoving, activePlayer, scores, variants, rollDice, selectCategory, playSound]);
+  }, [phase, activePlayerId, rollsLeft, dice, isCPUMoving, activePlayer, scores, variants, rollDice, selectCategory, playSound, gameMode]);
 
   const potentialScores = React.useMemo(() => calculatePotentialScores(dice), [dice]);
   const ranking = React.useMemo(() => getRanking(players, scores, variants), [players, scores, variants]);
@@ -93,7 +95,7 @@ export default function GamePage() {
   return (
     <PageContainer className="space-y-6 pb-28">
       <div className="flex items-center justify-between gap-3">
-        <Button variant="ghost" onClick={() => router.push("/play/setup")}>
+        <Button variant="ghost" onClick={() => router.push("/dashboard")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Salir
         </Button>
@@ -117,16 +119,18 @@ export default function GamePage() {
         <div className="lg:col-span-4 space-y-6">
           <TurnIndicator activePlayer={activePlayer} isCPU={isCPUMoving} />
 
-          <div className="rounded-3xl bg-white/5 border border-white/10 p-4 shadow-2xl">
-            <DiceTray
-              dice={dice}
-              rollsLeft={rollsLeft}
-              onRoll={rollDice}
-              onToggleLock={toggleDieLock}
-              disabled={!isUserTurn || isCPUMoving}
-              isCPU={isCPUMoving}
-            />
-          </div>
+          {gameMode === "digital" && (
+            <div className="rounded-3xl bg-white/5 border border-white/10 p-4 shadow-2xl">
+              <DiceTray
+                dice={dice}
+                rollsLeft={rollsLeft}
+                onRoll={rollDice}
+                onToggleLock={toggleDieLock}
+                disabled={!isUserTurn || isCPUMoving}
+                isCPU={isCPUMoving}
+              />
+            </div>
+          )}
 
           <div className="hidden lg:block">
             <TotalsBar players={players} scores={scores} variants={variants} />
@@ -139,9 +143,10 @@ export default function GamePage() {
             scores={scores}
             variants={variants}
             activePlayerId={activePlayerId}
-            potentialScores={isUserTurn && rollsLeft < 3 ? potentialScores : {}}
+            potentialScores={isUserTurn && rollsLeft < 3 && gameMode === "digital" ? potentialScores : {}}
             onCellClick={(pid, cat) => {
-              if (pid === activePlayerId && isUserTurn && rollsLeft < 3) {
+              const canSelect = pid === activePlayerId && isUserTurn && (gameMode === "analog" || rollsLeft < 3);
+              if (canSelect) {
                 playSound("scoreSelect");
                 selectCategory(cat);
               }
