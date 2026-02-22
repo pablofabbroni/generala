@@ -46,7 +46,12 @@ export function PlayerCard({ player, onChange }: { player: Player; onChange: (pa
             </div>
             <Switch
               checked={!!player.isCPU}
-              onCheckedChange={(v) => onChange({ isCPU: v, name: v ? `CPU ${player.name || ""}` : player.name.replace("CPU ", "") })}
+              onCheckedChange={(v) => {
+                const players = useGameStore.getState().players;
+                const idx = players.findIndex(p => p.id === player.id);
+                const defaultName = v ? `CPU ${idx + 1}` : `Jugador ${idx + 1}`;
+                onChange({ isCPU: v, name: defaultName });
+              }}
             />
           </div>
         )}

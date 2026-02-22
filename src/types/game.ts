@@ -1,6 +1,7 @@
 export type DiceState = {
   value: number;
   locked: boolean;
+  rollKey: number; // Increments on every roll — forces physics re-trigger even if value is same
 };
 
 export type GamePhase = "setup" | "playing" | "gameOver";

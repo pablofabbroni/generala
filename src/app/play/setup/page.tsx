@@ -9,9 +9,12 @@ import { useGameStore } from "@/store/gameStore";
 import { Button } from "@/components/ui/Button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Modal } from "@/components/ui/Modal";
+import * as React from "react";
 
 export default function SetupPage() {
   const router = useRouter();
+  const [showExitConfirm, setShowExitConfirm] = React.useState(false);
   const players = useGameStore((s) => s.players);
   const variants = useGameStore((s) => s.variants);
   const setPlayersCount = useGameStore((s) => s.setPlayersCount);
@@ -24,7 +27,7 @@ export default function SetupPage() {
   return (
     <PageContainer className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <Button variant="ghost" onClick={() => router.push("/")}>
+        <Button variant="ghost" onClick={() => setShowExitConfirm(true)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>
@@ -57,6 +60,35 @@ export default function SetupPage() {
           {disabled ? <div className="text-xs text-rose-300">Completá el nombre de todos los jugadores.</div> : null}
         </div>
       </div>
+      <Modal
+        open={showExitConfirm}
+        onOpenChange={setShowExitConfirm}
+        title="¿Volver al inicio?"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-white/60">
+            Si volvés ahora se perderá la configuración de jugadores y variantes. ¿Estás seguro?
+          </p>
+          <div className="flex gap-3">
+            <Button
+              variant="secondary"
+              className="flex-1"
+              onClick={() => setShowExitConfirm(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              className="flex-1 bg-red-500 hover:bg-red-600 border-red-500/50"
+              onClick={() => {
+                router.push("/");
+              }}
+            >
+              Volver
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </PageContainer>
   );
 }

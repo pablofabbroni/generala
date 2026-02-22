@@ -6,7 +6,10 @@ import { Play } from "lucide-react";
 
 export function StartGameButton({ disabled }: { disabled?: boolean }) {
   const router = useRouter();
-  const startGame = useGameStore(s => s.startGame);
+  const { gameMode, startGame } = useGameStore(s => ({
+    gameMode: s.gameMode,
+    startGame: s.startGame
+  }));
 
   return (
     <Button
@@ -20,7 +23,7 @@ export function StartGameButton({ disabled }: { disabled?: boolean }) {
       }}
     >
       <Play className="mr-2 h-5 w-5 fill-current" />
-      Jugar Ahora
+      {gameMode === "analog" ? "Empezar a Anotar" : "Jugar Ahora"}
     </Button>
   );
 }

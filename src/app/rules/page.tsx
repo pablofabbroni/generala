@@ -36,10 +36,29 @@ export default function RulesPage() {
             </div>
 
             <div className="grid gap-8">
-                {/* General Section */}
+                {/* How to Play Section */}
                 <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-6">
                     <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                         <Zap className="text-amber-500 h-6 w-6" />
+                        ¿Cómo Jugar?
+                    </h2>
+                    <div className="space-y-4 text-sm text-white/60 leading-relaxed">
+                        <p>
+                            El juego se desarrolla con **5 dados** de seis caras. En cada turno, tenés la posibilidad de realizar hasta **3 tiros**.
+                        </p>
+                        <ul className="list-disc list-inside space-y-2 ml-4">
+                            <li>En el primer tiro, lanzás los 5 dados.</li>
+                            <li>Podés **bloquear (guardar)** los dados que te sirvan y volver a tirar el resto en el segundo y tercer tiro.</li>
+                            <li>Después de cada tiro, podés elegir anotar tu puntaje en el tablero o continuar tirando si te quedan tiros disponibles.</li>
+                            <li>Una vez anotado el puntaje, el turno pasa al siguiente jugador.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                {/* General Section */}
+                <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-6">
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                        <Star className="text-amber-500 h-6 w-6" />
                         Conceptos Clave
                     </h2>
 
@@ -86,7 +105,7 @@ export default function RulesPage() {
                                     <td className="px-6 py-4">—</td>
                                 </tr>
                                 <tr>
-                                    <td className="px-6 py-4 font-medium">Escalera Menor*</td>
+                                    <td className="px-6 py-4 font-medium text-amber-500">Escalera Menor*</td>
                                     <td className="px-6 py-4">15 pts</td>
                                     <td className="px-6 py-4 text-emerald-400">20 pts</td>
                                 </tr>
@@ -138,14 +157,14 @@ export default function RulesPage() {
                             <div className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
                             <div>
                                 <h4 className="font-bold text-white">Chance / Comodín</h4>
-                                <p className="text-xs text-white/40">Una categoría flexible que suma el valor de los 5 dados, disponible en todas las modalidades.</p>
+                                <p className="text-xs text-white/40">Habilita una categoría flexible que suma el valor de los 5 dados.</p>
                             </div>
                         </div>
                         <div className="flex gap-4 p-4 rounded-3xl bg-white/5 border border-white/5">
                             <div className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
                             <div>
-                                <h4 className="font-bold text-white">Escalera Menor y Mayor</h4>
-                                <p className="text-xs text-white/40">Podés elegir jugar con dos tipos de escalera para sumar más puntos.</p>
+                                <h4 className="font-bold text-white">Escalera Menor</h4>
+                                <p className="text-xs text-white/40">Añade la categoría opcional que suma 15 puntos (20 si es servida) al lograr 4 números consecutivos.</p>
                             </div>
                         </div>
                         <div className="flex gap-4 p-4 rounded-3xl bg-white/5 border border-white/5">
@@ -153,6 +172,13 @@ export default function RulesPage() {
                             <div>
                                 <h4 className="font-bold text-white">Bono de 63 puntos</h4>
                                 <p className="text-xs text-white/40">Si la suma de tus puntos del 1 al 6 es igual o mayor a 63, ¡recibís un bono de 35 puntos adicionales!</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4 p-4 rounded-3xl bg-white/5 border border-white/5">
+                            <div className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+                            <div>
+                                <h4 className="font-bold text-white">Generala Doble</h4>
+                                <p className="text-xs text-white/40">Si lográs una segunda Generala en la misma partida, ¡sumás 100 puntos extra!</p>
                             </div>
                         </div>
                     </div>

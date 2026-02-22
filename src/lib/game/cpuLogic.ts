@@ -1,4 +1,4 @@
-import { Category, DiceState, Player } from "@/types/game";
+import { Category, DiceState } from "@/types/game";
 import { calculatePotentialScores } from "./scoreCalculator";
 import { getCategories } from "../categories";
 
@@ -16,28 +16,97 @@ export function getCPUMove(
 
     if (availableCategories.length === 0) return { action: "select", category: undefined };
 
-    // Simple logic for Easy/Medium
-    if (rollsLeft > 0) {
-        // Should we roll again?
-        // In Easy: always roll 3 times if no "big" game
-        // In Medium: keep some dice
-        const hasBigGame = (potentialScores.generala || 0) > 0 || (potentialScores.poker || 0) > 0 || (potentialScores.full || 0) > 0;
-
-        if (hasBigGame && rollsLeft < 3) {
-            // If we have a big game, select it
-            const bestCat = findBestCategory(potentialScores, availableCategories);
-            return { action: "select", category: bestCat };
-        }
-
-        // Otherwise roll again
-        // Logic for locking: lock dice that appear most frequently
-        const lockIndices = getLockIndices(dice, difficulty);
-        return { action: "roll", lockIndices };
+    // If no rolls remain — must select
+    if (rollsLeft <= 0) {
+        const bestCat = findBestCategory(potentialScores, availableCategories);
+        return { action: "select", category: bestCat };
     }
 
-    // No rolls left, must select
-    const bestCat = findBestCategory(potentialScores, availableCategories);
-    return { action: "select", category: bestCat };
+    // Check if we already have a great hand worth keeping
+    const hasGenerala = (potentialScores.generala ?? 0) > 0;
+    const hasPoker = (potentialScores.poker ?? 0) > 0;
+    const hasFull = (potentialScores.full ?? 0) > 0;
+    const hasStraight = (potentialScores.majorStraight ?? 0) > 0 || (potentialScores.minorStraight ?? 0) > 0;
+
+    if (hasGenerala || hasPoker || hasFull || hasStraight) {
+        // Already have a big hand — score it immediately
+        const bestCat = findBestCategory(potentialScores, availableCategories);
+        return { action: "select", category: bestCat };
+    }
+
+    // Decide what to lock for the next roll
+    const lockIndices = getSmartLockIndices(dice, potentialScores, rollsLeft, scorecard);
+
+    // If we have nothing worth keeping and it's the last roll, just score
+    if (rollsLeft === 1 && lockIndices.length === 0) {
+        const bestCat = findBestCategory(potentialScores, availableCategories);
+        return { action: "select", category: bestCat };
+    }
+
+    return { action: "roll", lockIndices };
+}
+
+function getSmartLockIndices(
+    dice: DiceState[],
+    potentialScores: Partial<Record<Category, number>>,
+    rollsLeft: number,
+    scorecard: Partial<Record<Category, number>>
+): number[] {
+    const values = dice.map(d => d.value);
+
+    // Count each face value frequency
+    const counts: Record<number, number> = {};
+    for (const v of values) counts[v] = (counts[v] || 0) + 1;
+
+    // Find the most frequent value
+    let bestValue = -1;
+    let bestCount = 0;
+    for (const [v, c] of Object.entries(counts)) {
+        if (c > bestCount) {
+            bestCount = c;
+            bestValue = parseInt(v);
+        }
+    }
+
+    // Always keep pairs, triples, quads — these lead to Poker, Full, or Generala
+    if (bestCount >= 2) {
+        return dice
+            .map((d, i) => (d.value === bestValue ? i : -1))
+            .filter(i => i !== -1);
+    }
+
+    // Check for straight potential: keep values that are part of longest consecutive run
+    const distinct = Array.from(new Set(values)).sort((a, b) => a - b);
+    const straightSets = [[1, 2, 3, 4, 5], [2, 3, 4, 5, 6], [1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]];
+    let bestStraightIndices: number[] = [];
+    for (const set of straightSets) {
+        const match = distinct.filter(v => set.includes(v));
+        if (match.length > bestStraightIndices.length) {
+            // Keep unique dice that match this straight set
+            const seen = new Set<number>();
+            const indices: number[] = [];
+            for (let i = 0; i < dice.length; i++) {
+                if (set.includes(dice[i].value) && !seen.has(dice[i].value)) {
+                    seen.add(dice[i].value);
+                    indices.push(i);
+                }
+            }
+            if (indices.length >= 3) bestStraightIndices = indices;
+        }
+    }
+    if (bestStraightIndices.length >= 3) return bestStraightIndices;
+
+    // If we have all different values with no pattern, keep the highest value die
+    if (rollsLeft === 1) {
+        // On last roll, keep any die with highest count (even if just 1)
+        return dice
+            .map((d, i) => (d.value === bestValue ? i : -1))
+            .filter(i => i !== -1)
+            .slice(0, 1);
+    }
+
+    // Still 2+ rolls left and all different — roll everything (no good hand forming)
+    return [];
 }
 
 function findBestCategory(
@@ -55,45 +124,4 @@ function findBestCategory(
         }
     }
     return bestCat;
-}
-
-function getLockIndices(dice: DiceState[], difficulty: string): number[] {
-    if (difficulty === "easy") return [];
-
-    const values = dice.map(d => d.value);
-
-    // Hard mode: check for straights or big games specifically
-    if (difficulty === "hard") {
-        // Simple straight check: if we have 4 distinct values that could form a straight, lock them
-        const distinct = Array.from(new Set(values)).sort();
-        if (distinct.length >= 4) {
-            // Check if they are consecutive (1,2,3,4 or 2,3,4,5 or 3,4,5,6)
-            for (let i = 0; i <= distinct.length - 4; i++) {
-                const sub = distinct.slice(i, i + 4);
-                if (sub[3] - sub[0] === 3) {
-                    // Lock these 4 dice
-                    return dice.reduce((acc, d, idx) => {
-                        if (sub.includes(d.value) && acc.filter(i => dice[i].value === d.value).length === 0) {
-                            acc.push(idx);
-                        }
-                        return acc;
-                    }, [] as number[]).slice(0, 4);
-                }
-            }
-        }
-    }
-
-    const counts = values.reduce((acc, v) => {
-        acc[v] = (acc[v] || 0) + 1;
-        return acc;
-    }, {} as Record<number, number>);
-
-    const maxEntry = Object.entries(counts).reduce((a, b) => b[1] > a[1] ? b : a);
-    const target = parseInt(maxEntry[0]);
-    const count = maxEntry[1];
-
-    // In Medium/Hard, don't lock if we only have 1 (too random), unless we are desperate
-    if (count < 2 && difficulty === "medium") return [];
-
-    return dice.map((d, i) => d.value === target ? i : -1).filter(i => i !== -1);
 }

@@ -28,11 +28,11 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
                 <ModeCard
-                    title="Reglas"
-                    description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
-                    icon={BookOpen}
-                    variant="glass"
-                    onClick={() => router.push("/rules")}
+                    title="Juega ahora"
+                    description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
+                    icon={Dices}
+                    variant="gold"
+                    onClick={() => router.push("/play/selection")}
                 />
 
                 <ModeCard
@@ -44,19 +44,19 @@ export default function DashboardPage() {
                 />
 
                 <ModeCard
-                    title="Juega ahora"
-                    description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
-                    icon={Dices}
-                    variant="gold"
-                    onClick={() => router.push("/play/selection")}
-                />
-
-                <ModeCard
-                    title="Eventos semanales"
+                    title="Torneo semanal"
                     description="Participá en torneos exclusivos y ganá premios únicos cada semana."
                     icon={Calendar}
                     disabled
                     badge="Próximamente"
+                />
+
+                <ModeCard
+                    title="Reglas"
+                    description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                    icon={BookOpen}
+                    variant="glass"
+                    onClick={() => router.push("/rules")}
                 />
             </div>
 

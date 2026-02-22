@@ -17,7 +17,7 @@ const defaultVariants: Variants = {
 
 const defaultPlayers = (): Player[] => ([
   { id: uid("p"), name: "Jugador 1", color: "#22c55e", isCPU: false },
-  { id: uid("v_cpu"), name: "CPU (Easy)", color: "#3b82f6", isCPU: true, difficulty: "easy" },
+  { id: uid("v_cpu"), name: "Jugador 2", color: "#3b82f6", isCPU: false },
 ]);
 
 const initialDice = createInitialDice();
