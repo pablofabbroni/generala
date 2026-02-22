@@ -22,6 +22,11 @@ export function getCPUMove(
         return { action: "select", category: bestCat };
     }
 
+    // MANDATORY FIRST ROLL: If rollsLeft is 3, we must roll (prevent scoring initial 1s state)
+    if (rollsLeft === 3) {
+        return { action: "roll", lockIndices: [] };
+    }
+
     // Check if we already have a great hand worth keeping
     const hasGenerala = (potentialScores.generala ?? 0) > 0;
     const hasPoker = (potentialScores.poker ?? 0) > 0;

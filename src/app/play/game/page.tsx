@@ -258,7 +258,7 @@ export default function GamePage() {
         )}>
           {/* Main Content: Table area (Only in Digital) */}
           {gameMode === "digital" && (
-            <div className="lg:col-span-8 space-y-6 order-2 lg:order-1">
+            <div className="lg:col-span-8 space-y-6 order-1"> {/* order-1 on mobile, lg:order-1 implicit/explicit */}
               <div className="relative group">
                 {/* Spotlight/Glow behind the table area */}
                 <div className="absolute -inset-4 bg-amber-500/5 blur-3xl rounded-full opacity-50 pointer-events-none" />
@@ -280,8 +280,8 @@ export default function GamePage() {
 
           {/* Sidebar: Scores and Info */}
           <div className={cn(
-            "space-y-6",
-            gameMode === "digital" ? "lg:col-span-4 order-1 lg:order-2" : "w-full"
+            "space-y-6 order-2", // order-2 on mobile, lg:order-2 below
+            gameMode === "digital" ? "lg:col-span-4 lg:order-2" : "w-full"
           )}>
             <div className={cn(gameMode === "digital" ? "hidden lg:block" : "block")}>
               <TurnIndicator activePlayer={activePlayer} isCPU={isCPUMoving} />
