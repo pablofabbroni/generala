@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { Search, MoreVertical, Shield, Ban, CheckCircle2, History } from "lucide-react"
+import { Search, MoreVertical, Shield, Ban, CheckCircle2, History, Coins } from "lucide-react"
 
 export default async function AdminUsersPage() {
     const supabase = createClient()
