@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "La mejor experiencia de Generala: Dados 3D, IA avanzada y modo anotador profesional.",
 };
 
+import { Navbar } from "@/components/layout/Navbar";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
@@ -16,7 +18,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="absolute -top-40 left-1/2 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl" />
             <div className="absolute -bottom-40 right-0 h-[500px] w-[700px] rounded-full bg-sky-400/10 blur-3xl" />
           </div>
-          {children}
+          <Navbar />
+          <main className="pt-16">
+            {children}
+          </main>
         </div>
       </body>
     </html>
