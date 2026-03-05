@@ -47,11 +47,15 @@ export async function signup(formData: FormData) {
 
 export async function loginWithProvider(provider: 'google' | 'facebook') {
     const supabase = createClient()
+    const { headers } = await import('next/headers')
+    const host = headers().get('host')
+    const protocol = host?.includes('localhost') ? 'http' : 'https'
+    const origin = `${protocol}://${host}`
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/auth/callback`,
+            redirectTo: `${origin}/api/auth/callback`,
         },
     })
 
