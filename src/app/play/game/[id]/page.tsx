@@ -93,7 +93,8 @@ export default function GameRoomPage() {
                 schema: 'public',
                 table: 'room_participants',
                 filter: `room_id=eq.${id}`
-            }, () => {
+            }, (payload) => {
+                console.log('Participant change detected:', payload)
                 fetchRoomData()
             })
             .on('postgres_changes', {
@@ -102,11 +103,11 @@ export default function GameRoomPage() {
                 table: 'rooms',
                 filter: `id=eq.${id}`
             }, (payload) => {
-                if (payload.new.is_active === false) {
-                    // Logic for game start if triggered by DB
-                }
+                setRoom(payload.new)
             })
-            .subscribe()
+            .subscribe((status) => {
+                console.log('Subscription status:', status)
+            })
 
         return () => {
             supabase.removeChannel(participantChannel)
@@ -343,10 +344,9 @@ export default function GameRoomPage() {
                                 <div className="text-2xl font-black text-white font-mono tracking-[0.3em] mb-4">
                                     {room.invite_code}
                                 </div>
-                                <Button className="w-full rounded-2xl h-12 uppercase font-black text-[10px]">
-                                    <Play className="mr-2 h-4 w-4" />
-                                    Iniciar Ahora (CPU)
-                                </Button>
+                                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-[10px] text-white/40 font-bold uppercase tracking-widest leading-relaxed">
+                                    La partida comenzará automáticamente cuando la sala esté llena ({room.max_players} jugadores).
+                                </div>
                             </div>
                         </div>
                     </div>

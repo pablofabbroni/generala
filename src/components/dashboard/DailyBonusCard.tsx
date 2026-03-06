@@ -60,8 +60,8 @@ export function DailyBonusCard({ lastClaimed }: Props) {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 transition-all ${canClaim
-                    ? 'border-amber-500/30 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.05)]'
-                    : 'border-white/5 bg-zinc-900/30 opacity-60'
+                ? 'border-amber-500/30 bg-amber-500/10 shadow-[0_0_20px_rgba(245,158,11,0.1)]'
+                : 'border-white/10 bg-zinc-900/60 opacity-60'
                 }`}
         >
             <div className="flex items-center gap-3">
@@ -69,8 +69,8 @@ export function DailyBonusCard({ lastClaimed }: Props) {
                     <Calendar className="h-4 w-4" />
                 </div>
                 <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Bonus Diario</p>
-                    <p className="text-[9px] font-medium text-white/40 uppercase tracking-tighter">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Bonus Diario</p>
+                    <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest mt-0.5">
                         {canClaim ? '¡Tu regalo está listo!' : `Disponible en ${timeLeft}`}
                     </p>
                 </div>

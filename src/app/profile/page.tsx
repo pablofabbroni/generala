@@ -45,9 +45,10 @@ export default async function ProfilePage() {
                                     <Mail className="h-3 w-3" />
                                     {profile?.email}
                                 </div>
-                                <div className="flex items-center justify-center md:justify-start gap-2 text-amber-500 font-black uppercase tracking-widest text-[10px]">
-                                    <Trophy className="h-3 w-3" />
-                                    Código: <span className="font-mono">{profile?.invite_code}</span>
+                                <div className="mt-2 inline-flex items-center gap-2 rounded-2xl bg-amber-500/10 border border-amber-500/30 px-4 py-2 text-amber-500">
+                                    <Trophy className="h-4 w-4" />
+                                    <span className="text-xs font-black uppercase tracking-widest">Código:</span>
+                                    <span className="text-sm font-mono font-black tracking-[0.2em]">{profile?.invite_code}</span>
                                 </div>
                             </div>
                         </div>

@@ -22,10 +22,12 @@ export function AdRewardCard({ lastClaimed, credits, dailyCount }: Props) {
 
     useEffect(() => {
         const checkEligibility = () => {
+            /* 
             if (credits >= 20) {
                 setCanClaim(false)
                 return
             }
+            */
 
             if (dailyCount >= 5) {
                 setCanClaim(false)
@@ -39,16 +41,16 @@ export function AdRewardCard({ lastClaimed, credits, dailyCount }: Props) {
 
             const now = new Date()
             const last = new Date(lastClaimed)
-            const diff = 2 * 60 * 60 * 1000 - (now.getTime() - last.getTime())
+            const diff = 30 * 60 * 1000 - (now.getTime() - last.getTime())
 
             if (diff <= 0) {
                 setCanClaim(true)
                 setCooldownTime(null)
             } else {
                 setCanClaim(false)
-                const hours = Math.floor(diff / (1000 * 60 * 60))
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-                setCooldownTime(`${hours}h ${minutes}m`)
+                const minutes = Math.floor(diff / (1000 * 60))
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+                setCooldownTime(`${minutes}m ${seconds}s`)
             }
         }
 
@@ -92,8 +94,8 @@ export function AdRewardCard({ lastClaimed, credits, dailyCount }: Props) {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 transition-all ${canClaim
-                        ? 'border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_15px_rgba(16,185,129,0.05)]'
-                        : 'border-white/5 bg-zinc-900/30 opacity-60'
+                    ? 'border-emerald-500/30 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
+                    : 'border-white/10 bg-zinc-900/60 opacity-60'
                     }`}
             >
                 <div className="flex items-center gap-3">
@@ -101,15 +103,15 @@ export function AdRewardCard({ lastClaimed, credits, dailyCount }: Props) {
                         <Megaphone className="h-4 w-4" />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-white">Rescate</p>
-                        <p className="text-[9px] font-medium text-white/40 uppercase tracking-tighter">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Rescate</p>
+                        <p className="text-[11px] font-bold text-white/60 uppercase tracking-widest mt-0.5">
                             {canClaim
                                 ? 'Mirá un aviso para +50'
                                 : cooldownTime
                                     ? `Espera ${cooldownTime}`
-                                    : credits >= 20
-                                        ? 'Saldo suficiente'
-                                        : 'Límite diario'}
+                                    : dailyCount >= 5
+                                        ? 'Límite diario'
+                                        : 'Disponible'}
                         </p>
                     </div>
                 </div>

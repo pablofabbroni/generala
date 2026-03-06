@@ -169,7 +169,7 @@ export default function DashboardView({ profile }: Props) {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    className="relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/30 p-8 backdrop-blur-sm"
+                    className="relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/50 p-8 backdrop-blur-sm"
                 >
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                         <div className="space-y-2">
@@ -178,7 +178,7 @@ export default function DashboardView({ profile }: Props) {
                                 <span className="text-xs font-black uppercase tracking-widest">Beta / Pruebas</span>
                             </div>
                             <h3 className="text-2xl font-black text-white uppercase italic">Tu feedback <span className="text-amber-500">Importa</span></h3>
-                            <p className="text-sm text-white/40 max-w-md">Esta versión está en pruebas. Tu comentario nos ayuda a mejorar la experiencia del Club.</p>
+                            <p className="text-sm text-white/50 max-w-md">Esta versión está en pruebas. Tu comentario nos ayuda a mejorar la experiencia del Club.</p>
                         </div>
 
                         {feedbackSent ? (
@@ -213,7 +213,7 @@ export default function DashboardView({ profile }: Props) {
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
                                         placeholder="Contanos qué te pareció..."
-                                        className="w-full h-24 rounded-2xl border border-white/5 bg-zinc-950/50 p-4 text-sm text-white focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all placeholder:text-white/10 resize-none"
+                                        className="w-full h-24 rounded-2xl border border-white/10 bg-zinc-950/50 p-4 text-sm text-white focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all placeholder:text-white/20 resize-none"
                                     />
                                     <button
                                         disabled={submittingFeedback}

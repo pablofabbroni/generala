@@ -50,7 +50,7 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
                     max_players: maxPlayers,
                     players_allowed: maxPlayers,
                     entry_fee: 0,
-                    is_private: true,
+                    is_private: !!password, // Private if password is set
                     invite_code: userProfile?.invite_code,
                     password: password || null,
                     is_active: true
@@ -87,7 +87,7 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-zinc-900 p-8 shadow-2xl"
+                        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 p-8 shadow-2xl"
                     >
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-2xl font-black text-white uppercase italic">Configurar <span className="text-amber-500">Mesa Privada</span></h2>

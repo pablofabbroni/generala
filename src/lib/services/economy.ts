@@ -62,17 +62,20 @@ export async function claimAdReward() {
 
     if (!profile) throw new Error('Usuario no logueado')
 
+    // Removal of balance check as per user request
+    /*
     if (profile.credits >= 20) {
         throw new Error('Solo podés pedir rescate con publicidad si tenés menos de 20 fichas.')
     }
+    */
 
     const now = new Date()
     const today = now.toISOString().split('T')[0]
     const lastAd = profile.last_ad_reward_at ? new Date(profile.last_ad_reward_at) : null
 
-    // Check 2h cooldown
-    if (lastAd && (now.getTime() - lastAd.getTime()) < 2 * 60 * 60 * 1000) {
-        throw new Error('Debés esperar 2 horas entre cada rescate.')
+    // Check 30min cooldown (changed from 2h)
+    if (lastAd && (now.getTime() - lastAd.getTime()) < 30 * 60 * 1000) {
+        throw new Error('Debés esperar 30 minutos entre cada rescate.')
     }
 
     // Check daily limit (5)

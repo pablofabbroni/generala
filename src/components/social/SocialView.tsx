@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { UserPlus, Search, User, Check, X, Loader2, Clock, Users } from 'lucide-react'
+import { UserPlus, Search, User, Check, X, Loader2, Clock, Users, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
 interface Player {
@@ -40,7 +40,7 @@ export default function SocialView({ initialFriends, initialPending, currentUser
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
-                .or(`name.ilike.%${query}%,alias.ilike.%${query}%,invite_code.ilike.%${query}%,email.ilike.%${query}%`)
+                .or(`name.ilike.%${query}%,invite_code.ilike.%${query}%,email.ilike.%${query}%`)
                 .neq('id', currentUserId)
                 .limit(10)
 
@@ -137,31 +137,31 @@ export default function SocialView({ initialFriends, initialPending, currentUser
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {searchResults.map((player) => (
-                            <div key={player.id} className="rounded-3xl border border-amber-500/20 bg-amber-500/5 p-4 flex items-center justify-between gap-4">
+                            <div key={player.id} className="rounded-3xl border border-amber-500/30 bg-amber-500/10 p-5 flex items-center justify-between gap-4 transition-all hover:border-amber-500/50">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-zinc-800">
+                                    <div className="h-12 w-12 overflow-hidden rounded-full border border-white/10 bg-zinc-800 shadow-lg">
                                         {player.image ? (
                                             <img src={player.image} alt="" className="h-full w-full object-cover" />
                                         ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-zinc-900 text-white/20">
+                                            <div className="flex h-full w-full items-center justify-center bg-zinc-900 text-white/5">
                                                 <User className="h-5 w-5" />
                                             </div>
                                         )}
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-black text-white uppercase italic">{player.name || player.alias}</p>
-                                        <p className="text-[10px] text-white/40 uppercase tracking-widest">{player.invite_code}</p>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-black text-white uppercase italic tracking-tight">{player.name}</p>
+                                        <p className="text-[10px] font-mono text-amber-500 font-bold tracking-widest uppercase truncate max-w-[120px]">
+                                            {player.invite_code}
+                                        </p>
                                     </div>
                                 </div>
-                                <Button
-                                    size="sm"
-                                    variant="ghost"
+                                <button
                                     onClick={() => sendFriendRequest(player.id)}
                                     disabled={processingId === player.id}
-                                    className="h-8 rounded-xl border border-amber-500/50 text-amber-500 hover:bg-amber-500 hover:text-black hover:border-amber-500"
+                                    className="rounded-xl bg-amber-500 p-2 text-black hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/10 disabled:opacity-50"
                                 >
-                                    {processingId === player.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <UserPlus className="h-3 w-3" />}
-                                </Button>
+                                    {processingId === player.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -178,7 +178,7 @@ export default function SocialView({ initialFriends, initialPending, currentUser
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {friends.map((friend: any) => (
-                            <div key={friend.id} className="group relative overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/30 p-4 transition-all hover:bg-zinc-900/50 hover:border-white/10">
+                            <div key={friend.id} className="group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/50 p-5 transition-all hover:bg-zinc-950 hover:border-white/20">
                                 <div className="flex items-center gap-4">
                                     <div className="relative">
                                         <div className="h-12 w-12 overflow-hidden rounded-full border border-white/10 bg-zinc-800">
