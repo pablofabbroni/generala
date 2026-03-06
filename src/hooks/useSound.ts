@@ -12,7 +12,7 @@ function getCtx(): AudioContext {
     return _ctx;
 }
 
-type SoundName = "diceRoll" | "diceHit" | "diceLock" | "scoreSelect" | "win";
+type SoundName = "diceRoll" | "diceHit" | "diceLock" | "scoreSelect" | "win" | "chipClink";
 
 interface PlayOptions {
     pitch?: number;
@@ -175,6 +175,27 @@ function playWebAudioSound(name: SoundName, options: PlayOptions = {}, isMuted: 
                     o.start(ctx.currentTime + delay);
                     o.stop(ctx.currentTime + delay + 0.3);
                 });
+                break;
+            }
+
+            case "chipClink": {
+                // High-pitched ceramic click
+                const bufferSize = ctx.sampleRate * 0.05;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.15));
+                }
+                const src = ctx.createBufferSource();
+                src.buffer = buffer;
+                const filter = ctx.createBiquadFilter();
+                filter.type = "highpass";
+                filter.frequency.value = 4000;
+                src.connect(filter);
+                filter.connect(gain);
+                gain.gain.setValueAtTime(vol * 0.4, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+                src.start(ctx.currentTime);
                 break;
             }
         }

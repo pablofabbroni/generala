@@ -28,6 +28,8 @@ CREATE TABLE public.profiles (
   status user_status DEFAULT 'active' NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  alias TEXT UNIQUE,
+  invite_code TEXT UNIQUE,
   last_login_at TIMESTAMPTZ,
   last_daily_bonus_at TIMESTAMPTZ,
   last_ad_reward_at TIMESTAMPTZ,
@@ -59,6 +61,12 @@ CREATE TABLE public.rooms (
   entry_fee INT NOT NULL,
   rake_pct INT DEFAULT 10 NOT NULL,
   is_active BOOLEAN DEFAULT TRUE NOT NULL,
+  variant TEXT NOT NULL DEFAULT 'standard',
+  start_at TIMESTAMPTZ,
+  max_players INT DEFAULT 4 NOT NULL,
+  is_private BOOLEAN DEFAULT FALSE NOT NULL,
+  invite_code TEXT UNIQUE,
+  password TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
@@ -128,8 +136,15 @@ CREATE TABLE public.friends (
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, name, image)
-  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'avatar_url');
+  INSERT INTO public.profiles (id, email, name, image, alias, invite_code)
+  VALUES (
+    NEW.id, 
+    NEW.email, 
+    NEW.raw_user_meta_data->>'full_name', 
+    NEW.raw_user_meta_data->>'avatar_url',
+    LOWER(REPLACE(NEW.raw_user_meta_data->>'full_name', ' ', '_')) || '_' || SUBSTR(CAST(NEW.id AS TEXT), 1, 4),
+    UPPER(SUBSTR(MD5(RANDOM()::TEXT), 1, 6))
+  );
   
   -- Initial Stats
   INSERT INTO public.player_stats (user_id) VALUES (NEW.id);

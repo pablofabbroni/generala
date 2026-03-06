@@ -89,53 +89,45 @@ export function AdRewardCard({ lastClaimed, credits, dailyCount }: Props) {
     return (
         <>
             <motion.div
-                whileHover={{ scale: 1.02 }}
-                className={`relative overflow-hidden rounded-3xl border p-6 transition-all ${canClaim
-                        ? 'border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.1)]'
-                        : 'border-white/5 bg-zinc-900/50 opacity-60'
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 transition-all ${canClaim
+                        ? 'border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_15px_rgba(16,185,129,0.05)]'
+                        : 'border-white/5 bg-zinc-900/30 opacity-60'
                     }`}
             >
-                <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-500">Publicidad</p>
-                        <h3 className="text-xl font-black text-white uppercase italic">Rescate de <span className="text-emerald-500">Fichas</span></h3>
-                        <p className="text-xs text-white/40">
-                            {credits >= 20
-                                ? 'Disponible solo con < 20 fichas.'
-                                : dailyCount >= 5
-                                    ? 'Límite diario alcanzado.'
-                                    : 'Mirá un aviso para ganar +50 fichas.'}
-                        </p>
+                <div className="flex items-center gap-3">
+                    <div className={`rounded-xl p-2 ${canClaim ? 'bg-emerald-500 text-black' : 'bg-white/5 text-white/20'}`}>
+                        <Megaphone className="h-4 w-4" />
                     </div>
-                    <div className={`rounded-2xl p-3 ${canClaim ? 'bg-emerald-500 text-black' : 'bg-white/5 text-white/20'}`}>
-                        <Megaphone className="h-6 w-6" />
+                    <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white">Rescate</p>
+                        <p className="text-[9px] font-medium text-white/40 uppercase tracking-tighter">
+                            {canClaim
+                                ? 'Mirá un aviso para +50'
+                                : cooldownTime
+                                    ? `Espera ${cooldownTime}`
+                                    : credits >= 20
+                                        ? 'Saldo suficiente'
+                                        : 'Límite diario'}
+                        </p>
                     </div>
                 </div>
 
-                <div className="mt-8">
-                    {canClaim ? (
-                        <button
-                            onClick={startAd}
-                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-3 text-[10px] font-black uppercase tracking-widest text-black shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-400"
-                        >
-                            <Play className="h-4 w-4 fill-current" />
-                            Ver Publicidad +50
-                        </button>
-                    ) : (
-                        <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/5 bg-zinc-950/50 py-3 text-[10px] font-black uppercase tracking-widest text-white/20">
-                            {cooldownTime ? (
-                                <>
-                                    <Clock className="h-3 w-3" />
-                                    <span>Espera {cooldownTime}</span>
-                                </>
-                            ) : credits >= 20 ? (
-                                <span>Saldo suficiente</span>
-                            ) : (
-                                <span>Límite agotado</span>
-                            )}
-                        </div>
-                    )}
-                </div>
+                {canClaim ? (
+                    <button
+                        onClick={startAd}
+                        disabled={loading}
+                        className="flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black hover:bg-emerald-400 disabled:opacity-50 transition-all"
+                    >
+                        {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3 fill-current" />}
+                        Ver Aviso
+                    </button>
+                ) : (
+                    <div className="rounded-xl bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/20">
+                        Bloqueado
+                    </div>
+                )}
             </motion.div>
 
             <AnimatePresence>

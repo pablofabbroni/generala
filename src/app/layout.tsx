@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 };
 
 import { Navbar } from "@/components/layout/Navbar";
+import NotificationCenter from "@/components/social/NotificationCenter";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="absolute -bottom-40 right-0 h-[500px] w-[700px] rounded-full bg-sky-400/10 blur-3xl" />
           </div>
           <Navbar />
+          <NotificationCenter />
           <main className="pt-16">
             {children}
           </main>

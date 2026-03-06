@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { login, signup, loginWithProvider } from './actions'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mail, Lock, User, Chrome, Facebook, ArrowRight, Loader2, AlertCircle } from 'lucide-react'
+import { Mail, Lock, User, Chrome, ArrowRight, Loader2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -156,20 +156,13 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <button
                             onClick={() => loginWithProvider('google')}
                             className="flex items-center justify-center gap-2 rounded-2xl border border-white/5 bg-zinc-950/50 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-white/5"
                         >
                             <Chrome className="h-4 w-4 text-amber-500" />
                             Google
-                        </button>
-                        <button
-                            onClick={() => loginWithProvider('facebook')}
-                            className="flex items-center justify-center gap-2 rounded-2xl border border-white/5 bg-zinc-950/50 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-all hover:bg-white/5"
-                        >
-                            <Facebook className="h-4 w-4 text-blue-500" />
-                            Facebook
                         </button>
                     </div>
                 </motion.div>

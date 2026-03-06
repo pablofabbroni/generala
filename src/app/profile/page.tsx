@@ -40,9 +40,15 @@ export default async function ProfilePage() {
                     <div className="flex-1 text-center md:text-left space-y-4">
                         <div className="space-y-1">
                             <h1 className="text-4xl font-black text-white uppercase italic tracking-tight">{profile?.name || 'Nuevo Jugador'}</h1>
-                            <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 font-bold uppercase tracking-widest text-[10px]">
-                                <Mail className="h-3 w-3" />
-                                {profile?.email}
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center justify-center md:justify-start gap-2 text-white/40 font-bold uppercase tracking-widest text-[10px]">
+                                    <Mail className="h-3 w-3" />
+                                    {profile?.email}
+                                </div>
+                                <div className="flex items-center justify-center md:justify-start gap-2 text-amber-500 font-black uppercase tracking-widest text-[10px]">
+                                    <Trophy className="h-3 w-3" />
+                                    Código: <span className="font-mono">{profile?.invite_code}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -88,7 +94,7 @@ export default async function ProfilePage() {
                                 <Edit2 className="h-4 w-4" />
                             </button>
                             <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed">
-                                Si iniciaste sesión con Google o Facebook, la gestión de contraseña se realiza en sus respectivas plataformas.
+                                Si iniciaste sesión con Google, la gestión de contraseña se realiza en su plataforma.
                             </p>
                         </div>
                     </div>

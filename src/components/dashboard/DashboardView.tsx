@@ -9,6 +9,7 @@ import { useGameStore } from "@/store/gameStore"
 import { DailyBonusCard } from "./DailyBonusCard"
 import { AdRewardCard } from "./AdRewardCard"
 import { motion } from 'framer-motion'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
     profile: any
@@ -19,6 +20,9 @@ export default function DashboardView({ profile }: Props) {
     const setGameMode = useGameStore((s) => s.setGameMode)
     const [feedbackSent, setFeedbackSent] = useState(false)
     const [submittingFeedback, setSubmittingFeedback] = useState(false)
+    const [selectedCategory, setSelectedCategory] = useState<'bug' | 'idea' | 'ux'>('idea')
+    const [message, setMessage] = useState('')
+    const supabase = createClient()
 
     const handleModeSelect = (mode: "digital" | "analog", path: string) => {
         setGameMode(mode)
@@ -28,10 +32,26 @@ export default function DashboardView({ profile }: Props) {
     const handleFeedbackSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setSubmittingFeedback(true)
-        // Simulate feedback submission for now, will integrate with API later
-        await new Promise(r => setTimeout(r, 1000))
-        setFeedbackSent(true)
-        setSubmittingFeedback(false)
+
+        try {
+            const { error } = await supabase
+                .from('feedback')
+                .insert({
+                    user_id: profile?.id,
+                    category: selectedCategory,
+                    message: message,
+                    page: 'dashboard',
+                    status: 'new'
+                })
+
+            if (error) throw error
+            setFeedbackSent(true)
+            setMessage('')
+        } catch (err) {
+            console.error('Error submitting feedback:', err)
+        } finally {
+            setSubmittingFeedback(false)
+        }
     }
 
     return (
@@ -45,49 +65,103 @@ export default function DashboardView({ profile }: Props) {
                 </p>
             </div>
 
-            {/* Economy Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-4">
-                <DailyBonusCard lastClaimed={profile?.last_daily_bonus_at} />
-                <AdRewardCard
-                    lastClaimed={profile?.last_ad_reward_at}
-                    credits={profile?.credits || 0}
-                    dailyCount={profile?.ad_reward_count_today || 0}
-                />
+            {/* Economy Section - Compact and Below Header */}
+            <div className="flex flex-col md:flex-row gap-4 w-full max-w-4xl px-4">
+                <div className="flex-1">
+                    <DailyBonusCard lastClaimed={profile?.last_daily_bonus_at} />
+                </div>
+                <div className="flex-1">
+                    <AdRewardCard
+                        lastClaimed={profile?.last_ad_reward_at}
+                        credits={profile?.credits || 0}
+                        dailyCount={profile?.ad_reward_count_today || 0}
+                    />
+                </div>
             </div>
 
-            {/* Game Modes Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
-                <ModeCard
-                    title="Juega ahora"
-                    description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
-                    icon={Dices}
-                    variant="gold"
-                    onClick={() => router.push("/play/selection")}
-                />
+            {/* Game Modes Section - Grid for Desktop, Carousel for Mobile */}
+            <div className="w-full max-w-4xl px-4">
+                {/* Mobile Carousel View */}
+                <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 pb-6 -mx-4 px-4">
+                    <div className="snap-center shrink-0 w-[85vw]">
+                        <ModeCard
+                            title="Juega ahora"
+                            description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
+                            icon={Dices}
+                            variant="gold"
+                            onClick={() => router.push("/play/selection")}
+                        />
+                    </div>
+                    <div className="snap-center shrink-0 w-[85vw]">
+                        <ModeCard
+                            title="Anotador"
+                            description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
+                            icon={Calculator}
+                            variant="glass"
+                            onClick={() => handleModeSelect("analog", "/play/setup")}
+                        />
+                    </div>
+                    <div className="snap-center shrink-0 w-[85vw]">
+                        <ModeCard
+                            title="Torneo semanal"
+                            description="Participá en torneos exclusivos y ganá premios únicos cada semana."
+                            icon={Calendar}
+                            disabled
+                            badge="Próximamente"
+                        />
+                    </div>
+                    <div className="snap-center shrink-0 w-[85vw]">
+                        <ModeCard
+                            title="Reglas"
+                            description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                            icon={BookOpen}
+                            variant="glass"
+                            onClick={() => router.push("/rules")}
+                        />
+                    </div>
+                </div>
 
-                <ModeCard
-                    title="Anotador"
-                    description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
-                    icon={Calculator}
-                    variant="glass"
-                    onClick={() => handleModeSelect("analog", "/play/setup")}
-                />
+                {/* Desktop Grid View */}
+                <div className="hidden md:grid grid-cols-2 gap-8">
+                    <ModeCard
+                        title="Juega ahora"
+                        description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
+                        icon={Dices}
+                        variant="gold"
+                        onClick={() => router.push("/play/selection")}
+                    />
 
-                <ModeCard
-                    title="Torneo semanal"
-                    description="Participá en torneos exclusivos y ganá premios únicos cada semana."
-                    icon={Calendar}
-                    disabled
-                    badge="Próximamente"
-                />
+                    <ModeCard
+                        title="Anotador"
+                        description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
+                        icon={Calculator}
+                        variant="glass"
+                        onClick={() => handleModeSelect("analog", "/play/setup")}
+                    />
 
-                <ModeCard
-                    title="Reglas"
-                    description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
-                    icon={BookOpen}
-                    variant="glass"
-                    onClick={() => router.push("/rules")}
-                />
+                    <ModeCard
+                        title="Torneo semanal"
+                        description="Participá en torneos exclusivos y ganá premios únicos cada semana."
+                        icon={Calendar}
+                        disabled
+                        badge="Próximamente"
+                    />
+
+                    <ModeCard
+                        title="Reglas"
+                        description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                        icon={BookOpen}
+                        variant="glass"
+                        onClick={() => router.push("/rules")}
+                    />
+                </div>
+
+                {/* Carousel Indicators for Mobile */}
+                <div className="flex justify-center gap-2 mt-2 md:hidden">
+                    {[0, 1, 2, 3].map((i) => (
+                        <div key={i} className="h-1.5 w-1.5 rounded-full bg-white/20" />
+                    ))}
+                </div>
             </div>
 
             {/* Feedback Section */}
@@ -123,7 +197,11 @@ export default function DashboardView({ profile }: Props) {
                                         <button
                                             key={cat}
                                             type="button"
-                                            className="flex-1 rounded-xl bg-white/5 border border-white/10 py-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white hover:border-white/20 transition-all"
+                                            onClick={() => setSelectedCategory(cat as any)}
+                                            className={`flex-1 rounded-xl border py-2 text-[10px] font-bold uppercase tracking-widest transition-all ${selectedCategory === cat
+                                                ? 'bg-amber-500 border-amber-500 text-black shadow-lg shadow-amber-500/20'
+                                                : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:border-white/20'
+                                                }`}
                                         >
                                             {cat}
                                         </button>
@@ -132,6 +210,8 @@ export default function DashboardView({ profile }: Props) {
                                 <div className="relative">
                                     <textarea
                                         required
+                                        value={message}
+                                        onChange={(e) => setMessage(e.target.value)}
                                         placeholder="Contanos qué te pareció..."
                                         className="w-full h-24 rounded-2xl border border-white/5 bg-zinc-950/50 p-4 text-sm text-white focus:border-amber-500/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all placeholder:text-white/10 resize-none"
                                     />

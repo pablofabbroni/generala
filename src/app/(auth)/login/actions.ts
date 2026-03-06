@@ -45,7 +45,7 @@ export async function signup(formData: FormData) {
     redirect('/dashboard')
 }
 
-export async function loginWithProvider(provider: 'google' | 'facebook') {
+export async function loginWithProvider(provider: 'google') {
     const supabase = createClient()
     const { headers } = await import('next/headers')
     const host = headers().get('host')

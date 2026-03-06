@@ -57,38 +57,38 @@ export function DailyBonusCard({ lastClaimed }: Props) {
 
     return (
         <motion.div
-            whileHover={{ scale: 1.02 }}
-            className={`relative overflow-hidden rounded-3xl border p-6 transition-all ${canClaim
-                    ? 'border-amber-500/50 bg-amber-500/10 shadow-[0_0_20px_rgba(245,158,11,0.1)]'
-                    : 'border-white/5 bg-zinc-900/50 opacity-60'
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`flex items-center justify-between gap-4 rounded-2xl border px-4 py-3 transition-all ${canClaim
+                    ? 'border-amber-500/30 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.05)]'
+                    : 'border-white/5 bg-zinc-900/30 opacity-60'
                 }`}
         >
-            <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500">Bonus Diario</p>
-                    <h3 className="text-xl font-black text-white uppercase italic">Regalo del <span className="text-amber-500">Club</span></h3>
-                    <p className="text-xs text-white/40">Vuelve cada día para reclamar +100 fichas gratis.</p>
+            <div className="flex items-center gap-3">
+                <div className={`rounded-xl p-2 ${canClaim ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/20'}`}>
+                    <Calendar className="h-4 w-4" />
                 </div>
-                <div className={`rounded-2xl p-3 ${canClaim ? 'bg-amber-500 text-black' : 'bg-white/5 text-white/20'}`}>
-                    <Calendar className="h-6 w-6" />
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Bonus Diario</p>
+                    <p className="text-[9px] font-medium text-white/40 uppercase tracking-tighter">
+                        {canClaim ? '¡Tu regalo está listo!' : `Disponible en ${timeLeft}`}
+                    </p>
                 </div>
             </div>
 
-            <div className="mt-8">
-                {canClaim ? (
-                    <button
-                        onClick={handleClaim}
-                        disabled={loading}
-                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 py-3 text-[10px] font-black uppercase tracking-widest text-black shadow-lg shadow-amber-500/20 transition-all hover:bg-amber-400 disabled:opacity-50"
-                    >
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Reclamar +100 Fichas'}
-                    </button>
-                ) : (
-                    <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/5 bg-zinc-950/50 py-3 text-[10px] font-black uppercase tracking-widest text-white/20">
-                        <span>Disponible en {timeLeft}</span>
-                    </div>
-                )}
-            </div>
+            {canClaim ? (
+                <button
+                    onClick={handleClaim}
+                    disabled={loading}
+                    className="rounded-xl bg-amber-500 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black hover:bg-amber-400 disabled:opacity-50 transition-all"
+                >
+                    {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Reclamar +100'}
+                </button>
+            ) : (
+                <div className="rounded-xl bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/20">
+                    Siguiente
+                </div>
+            )}
         </motion.div>
     )
 }
