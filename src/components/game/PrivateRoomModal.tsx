@@ -14,13 +14,11 @@ interface Props {
 }
 
 export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props) {
-    const [search, setSearch] = useState('')
-    const [searching, setSearching] = useState(false)
-    const [foundUsers, setFoundUsers] = useState<any[]>([])
     const [copied, setCopied] = useState(false)
 
     // Room Configuration State
     const [maxPlayers, setMaxPlayers] = useState(2)
+    const [roomName, setRoomName] = useState('')
     const [gameVariants, setGameVariants] = useState({
         minorStraight: false,
         doubleGenerala: false,
@@ -39,36 +37,16 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
         setTimeout(() => setCopied(false), 2000)
     }
 
-    const handleSearch = async () => {
-        if (!search.trim()) return
-        setSearching(true)
-        try {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('id, name, alias, image, invite_code')
-                .or(`alias.ilike.%${search}%,invite_code.eq.${search.toUpperCase()}`)
-                .neq('id', userProfile?.id)
-                .limit(5)
-
-            if (error) throw error
-            setFoundUsers(data || [])
-        } catch (err) {
-            console.error('Error searching users:', err)
-        } finally {
-            setSearching(false)
-        }
-    }
-
     const createPrivateRoom = async () => {
         setCreating(true)
         try {
             const { data, error } = await supabase
                 .from('rooms')
                 .insert({
-                    name: `Sala de ${userProfile?.name}`,
+                    name: roomName.trim() || `Sala de ${userProfile?.name}`,
                     level: 'casual',
-                    variant: 'standard', // Keep a base variant name
-                    rules: gameVariants, // Save the specific rules here
+                    variant: 'standard',
+                    rules: gameVariants,
                     max_players: maxPlayers,
                     entry_fee: 0,
                     is_private: true,
@@ -133,11 +111,22 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
                                 </div>
                             </div>
 
-                            {/* Room Configuration */}
+                            {/* Room Setup - Moved Name Here */}
                             <div className="space-y-4 rounded-2xl bg-zinc-950/20 p-6 border border-white/5">
-                                <div className="flex items-center gap-2 mb-2 text-amber-500">
+                                <div className="space-y-2">
+                                    <label className="text-[9px] font-bold uppercase tracking-widest text-white/40 ml-1">Nombre de la Sala (Opcional)</label>
+                                    <input
+                                        type="text"
+                                        value={roomName}
+                                        onChange={(e) => setRoomName(e.target.value)}
+                                        placeholder={`Sala de ${userProfile?.name}`}
+                                        className="w-full rounded-xl border border-white/5 bg-zinc-950/50 py-2.5 px-4 text-xs text-white focus:border-amber-500/50 outline-none"
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-2 mb-2 text-amber-500 pt-2">
                                     <Settings2 className="h-4 w-4" />
-                                    <p className="text-[10px] font-black uppercase tracking-widest">Configuración de Sala</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest">Configuración de Juego</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4">
@@ -207,45 +196,6 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
                                 </div>
                             </div>
 
-                            {/* Invite Friends Section */}
-                            <div className="space-y-4">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Invitar Amigos</p>
-                                <div className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/20" />
-                                        <input
-                                            value={search}
-                                            onChange={(e) => setSearch(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            placeholder="Buscar por Alias o Código..."
-                                            className="w-full rounded-2xl border border-white/5 bg-zinc-950/50 py-3.5 pl-12 pr-4 text-sm text-white focus:border-amber-500/50 outline-none"
-                                        />
-                                    </div>
-                                    <Button onClick={handleSearch} disabled={searching} className="rounded-2xl">
-                                        {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Buscar'}
-                                    </Button>
-                                </div>
-
-                                <div className="max-height-[200px] overflow-y-auto space-y-2">
-                                    {foundUsers.map((user) => (
-                                        <div key={user.id} className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-zinc-800 border border-white/10" />
-                                                <div>
-                                                    <p className="text-xs font-bold text-white">{user.name}</p>
-                                                    <p className="text-[10px] text-white/40 font-mono italic">@{user.alias}</p>
-                                                </div>
-                                            </div>
-                                            <button className="rounded-xl bg-amber-500 p-2 text-black hover:bg-amber-400 transition-all">
-                                                <Send className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                    {foundUsers.length === 0 && !searching && search && (
-                                        <p className="text-center py-4 text-[10px] font-bold uppercase tracking-widest text-white/20">Jugador no encontrado</p>
-                                    )}
-                                </div>
-                            </div>
 
                             <button
                                 onClick={createPrivateRoom}
