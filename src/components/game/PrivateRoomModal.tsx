@@ -48,6 +48,7 @@ export default function PrivateRoomModal({ isOpen, onClose, userProfile }: Props
                     variant: 'standard',
                     rules: gameVariants,
                     max_players: maxPlayers,
+                    players_allowed: maxPlayers,
                     entry_fee: 0,
                     is_private: true,
                     invite_code: userProfile?.invite_code,

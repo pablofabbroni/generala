@@ -19,6 +19,9 @@ BEGIN
     -- players_allowed
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='rooms' AND column_name='players_allowed') THEN
         ALTER TABLE public.rooms ADD COLUMN players_allowed INT NOT NULL DEFAULT 4;
+    ELSE
+        -- Ensure it has a default for existing column
+        ALTER TABLE public.rooms ALTER COLUMN players_allowed SET DEFAULT 4;
     END IF;
 
     -- entry_fee
