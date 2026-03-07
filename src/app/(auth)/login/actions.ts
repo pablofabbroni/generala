@@ -24,6 +24,7 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
     const supabase = createClient()
+    const referralCode = formData.get('referred_by') as string
 
     const data = {
         email: formData.get('email') as string,
@@ -31,6 +32,7 @@ export async function signup(formData: FormData) {
         options: {
             data: {
                 full_name: formData.get('name') as string,
+                referred_by: referralCode || null,
             }
         }
     }

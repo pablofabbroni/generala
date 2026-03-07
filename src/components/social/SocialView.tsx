@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { usePresence } from '@/hooks/usePresence'
 import { UserPlus, Search, User, Check, X, Loader2, Clock, Users, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { cn } from '@/lib/utils'
 
 interface Player {
     id: string
@@ -30,6 +32,11 @@ export default function SocialView({ initialFriends, initialPending, currentUser
     const [processingId, setProcessingId] = useState<string | null>(null)
 
     const supabase = createClient()
+    const { onlineUsers } = usePresence(currentUserId)
+
+    const isUserOnline = (userId: string) => {
+        return !!onlineUsers[userId]
+    }
 
     const handleSearch = async () => {
         const query = search.trim()
@@ -190,12 +197,20 @@ export default function SocialView({ initialFriends, initialPending, currentUser
                                                 </div>
                                             )}
                                         </div>
-                                        {/* Simplified Online Indicator */}
-                                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 bg-emerald-500" />
+                                        {/* Dynamic Online Indicator */}
+                                        <div className={cn(
+                                            "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 transition-colors duration-500",
+                                            isUserOnline(friend.id) ? "bg-emerald-500 shadow-[0_0_8px_#10b981]" : "bg-zinc-600"
+                                        )} />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="truncate text-sm font-black text-white uppercase italic">{friend.name || friend.alias || 'Sin nombre'}</p>
-                                        <p className="text-[10px] text-white/20 uppercase tracking-widest">En línea</p>
+                                        <p className={cn(
+                                            "text-[10px] uppercase tracking-widest transition-colors",
+                                            isUserOnline(friend.id) ? "text-emerald-500/70" : "text-white/20"
+                                        )}>
+                                            {isUserOnline(friend.id) ? "En línea" : "Desconectado"}
+                                        </p>
                                     </div>
                                     <button className="p-2 rounded-xl bg-white/5 text-white/20 hover:text-white transition-all opacity-0 group-hover:opacity-100">
                                         <X className="h-4 w-4" />

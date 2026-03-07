@@ -86,7 +86,7 @@ export default function DashboardView({ profile }: Props) {
                     <div className="snap-center shrink-0 w-[85vw]">
                         <ModeCard
                             title="Juega ahora"
-                            description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
+                            description="Entrá a una mesa, lanzá los dados y probá tu suerte contra la CPU o amigos."
                             icon={Dices}
                             variant="gold"
                             onClick={() => router.push("/play/selection")}
@@ -94,17 +94,17 @@ export default function DashboardView({ profile }: Props) {
                     </div>
                     <div className="snap-center shrink-0 w-[85vw]">
                         <ModeCard
-                            title="Anotador"
-                            description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
-                            icon={Calculator}
+                            title="Comunidad"
+                            description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales."
+                            icon={MessageSquare}
                             variant="glass"
-                            onClick={() => handleModeSelect("analog", "/play/setup")}
+                            onClick={() => router.push("/friends")}
                         />
                     </div>
                     <div className="snap-center shrink-0 w-[85vw]">
                         <ModeCard
-                            title="Torneo semanal"
-                            description="Participá en torneos exclusivos y ganá premios únicos cada semana."
+                            title="Torneos del Club"
+                            description="Participá en eventos exclusivos y ganá premios únicos cada semana."
                             icon={Calendar}
                             disabled
                             badge="Próximamente"
@@ -113,7 +113,7 @@ export default function DashboardView({ profile }: Props) {
                     <div className="snap-center shrink-0 w-[85vw]">
                         <ModeCard
                             title="Reglas"
-                            description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                            description="Repasá las reglas oficiales, variantes y bonos especiales de la Generala."
                             icon={BookOpen}
                             variant="glass"
                             onClick={() => router.push("/rules")}
@@ -125,23 +125,23 @@ export default function DashboardView({ profile }: Props) {
                 <div className="hidden md:grid grid-cols-2 gap-8">
                     <ModeCard
                         title="Juega ahora"
-                        description="Elegí la modalidad, lanzá los dados y disfrutá la experiencia."
+                        description="Entrá a una mesa, lanzá los dados y probá tu suerte contra la CPU o amigos."
                         icon={Dices}
                         variant="gold"
                         onClick={() => router.push("/play/selection")}
                     />
 
                     <ModeCard
-                        title="Anotador"
-                        description="¿Jugás con dados físicos? Usá la app solo para anotar tus puntajes de forma profesional."
-                        icon={Calculator}
+                        title="Comunidad"
+                        description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales en tiempo real."
+                        icon={MessageSquare}
                         variant="glass"
-                        onClick={() => handleModeSelect("analog", "/play/setup")}
+                        onClick={() => router.push("/friends")}
                     />
 
                     <ModeCard
-                        title="Torneo semanal"
-                        description="Participá en torneos exclusivos y ganá premios únicos cada semana."
+                        title="Torneos del Club"
+                        description="Participá en competencias exclusivas y ganá premios únicos cada semana."
                         icon={Calendar}
                         disabled
                         badge="Próximamente"
@@ -149,7 +149,7 @@ export default function DashboardView({ profile }: Props) {
 
                     <ModeCard
                         title="Reglas"
-                        description="Conocé las reglas del juego, variantes, qué es el Chance y el bono por Servido."
+                        description="Repasá las reglas oficiales, variantes y bonos especiales de la Generala."
                         icon={BookOpen}
                         variant="glass"
                         onClick={() => router.push("/rules")}
