@@ -1,5 +1,6 @@
 'use client'
 
+import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
 import { login, signup, loginWithProvider } from './actions'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -8,6 +9,8 @@ import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ModeCard } from '@/components/dashboard/ModeCard'
 import { useGameStore } from '@/store/gameStore'
+
+import { TournamentCountdown } from '@/components/tournaments/TournamentCountdown'
 
 export function LoginPageContent() {
     const [isLogin, setIsLogin] = useState(true)
@@ -18,6 +21,19 @@ export function LoginPageContent() {
     const error = searchParams.get('error')
     const setGameMode = useGameStore((s) => s.setGameMode)
 
+    // Example logic to check if user is logged in
+    // This will be replaced by actual supabase session check
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
+
+    useEffect(() => {
+        const checkSession = async () => {
+            const supabase = createClient()
+            const { data: { session } } = await supabase.auth.getSession()
+            setIsUserLoggedIn(!!session)
+        }
+        checkSession()
+    }, [])
+
     useEffect(() => {
         const invite = searchParams.get('invite')
         if (invite) {
@@ -26,6 +42,14 @@ export function LoginPageContent() {
             setIsLogin(false)
         }
     }, [searchParams])
+
+    const handleJoinTournament = () => {
+        if (!isUserLoggedIn) {
+            router.push('/login?redirect=/tournaments')
+        } else {
+            router.push('/tournaments/lobby')
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
@@ -126,22 +150,37 @@ export function LoginPageContent() {
                                 </div>
                             </div>
 
-                            <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 flex flex-col justify-between">
-                                <div className="space-y-4">
+                            <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 flex flex-col justify-between h-full relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 font-mono">
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
+                                        <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Inscripciones Abiertas</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-6">
                                     <div className="flex items-center gap-2 text-emerald-500">
                                         <Calendar className="h-4 w-4" />
                                         <span className="text-[10px] font-black uppercase tracking-widest">Torneos del Club</span>
                                     </div>
-                                    <h3 className="text-2xl font-black text-white uppercase italic">GRAN FINAL <span className="text-amber-500">DOMINGO</span></h3>
+                                    <div className="space-y-1">
+                                        <h3 className="text-3xl font-black text-white uppercase italic leading-none">GRAN FINAL</h3>
+                                        <h3 className="text-3xl font-black text-amber-500 uppercase italic leading-none">DOMINGO</h3>
+                                    </div>
+
+                                    <TournamentCountdown targetDate={new Date(new Date().getTime() + 1000 * 60 * 60 * 48)} />
+
                                     <p className="text-xs text-white/40 font-bold uppercase tracking-[0.15em]">Premio: 5.000 Créditos</p>
                                 </div>
-                                <div className="mt-6 flex items-center justify-between">
+                                <div className="mt-8 flex items-center justify-between">
                                     <div className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-500 uppercase">
                                         20:00 HS
                                     </div>
-                                    <Link href="/login" className="text-[10px] font-black text-white/20 hover:text-white uppercase tracking-widest underline underline-offset-4 decoration-amber-500/50">
-                                        Ver detalles
-                                    </Link>
+                                    <button
+                                        onClick={handleJoinTournament}
+                                        className="px-6 py-2 rounded-xl bg-white text-[10px] font-black text-black uppercase tracking-widest hover:bg-amber-500 transition-colors shadow-lg shadow-white/5 active:scale-95"
+                                    >
+                                        Unirse
+                                    </button>
                                 </div>
                             </div>
                         </div>

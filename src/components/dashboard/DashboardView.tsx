@@ -94,20 +94,11 @@ export default function DashboardView({ profile }: Props) {
                     </div>
                     <div className="snap-center shrink-0 w-[85vw]">
                         <ModeCard
-                            title="Comunidad"
-                            description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales."
-                            icon={MessageSquare}
-                            variant="glass"
-                            onClick={() => router.push("/friends")}
-                        />
-                    </div>
-                    <div className="snap-center shrink-0 w-[85vw]">
-                        <ModeCard
                             title="Torneos del Club"
                             description="Participá en eventos exclusivos y ganá premios únicos cada semana."
                             icon={Calendar}
-                            disabled
-                            badge="Próximamente"
+                            variant="gold"
+                            onClick={() => router.push("/tournaments")}
                         />
                     </div>
                     <div className="snap-center shrink-0 w-[85vw]">
@@ -117,6 +108,15 @@ export default function DashboardView({ profile }: Props) {
                             icon={BookOpen}
                             variant="glass"
                             onClick={() => router.push("/rules")}
+                        />
+                    </div>
+                    <div className="snap-center shrink-0 w-[85vw]">
+                        <ModeCard
+                            title="Comunidad"
+                            description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales."
+                            icon={MessageSquare}
+                            variant="glass"
+                            onClick={() => router.push("/friends")}
                         />
                     </div>
                 </div>
@@ -132,19 +132,11 @@ export default function DashboardView({ profile }: Props) {
                     />
 
                     <ModeCard
-                        title="Comunidad"
-                        description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales en tiempo real."
-                        icon={MessageSquare}
-                        variant="glass"
-                        onClick={() => router.push("/friends")}
-                    />
-
-                    <ModeCard
                         title="Torneos del Club"
                         description="Participá en competencias exclusivas y ganá premios únicos cada semana."
                         icon={Calendar}
-                        disabled
-                        badge="Próximamente"
+                        variant="gold"
+                        onClick={() => router.push("/tournaments")}
                     />
 
                     <ModeCard
@@ -153,6 +145,14 @@ export default function DashboardView({ profile }: Props) {
                         icon={BookOpen}
                         variant="glass"
                         onClick={() => router.push("/rules")}
+                    />
+
+                    <ModeCard
+                        title="Comunidad"
+                        description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales en tiempo real."
+                        icon={MessageSquare}
+                        variant="glass"
+                        onClick={() => router.push("/friends")}
                     />
                 </div>
 
