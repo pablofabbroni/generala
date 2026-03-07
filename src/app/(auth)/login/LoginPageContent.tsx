@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { ModeCard } from '@/components/dashboard/ModeCard'
 import { useGameStore } from '@/store/gameStore'
+import { Button } from '@/components/ui/Button'
 
 import { TournamentCountdown } from '@/components/tournaments/TournamentCountdown'
 
@@ -23,17 +24,17 @@ export function LoginPageContent() {
     const [rankingIndex, setRankingIndex] = useState(0)
 
     const topPlayers = [
-        { pos: 1, name: 'Tavo_Apostador', pts: 12450 },
-        { pos: 2, name: 'Facu_Dices', pts: 11200 },
-        { pos: 3, name: 'Santi_King', pts: 9800 },
-        { pos: 4, name: 'Gabi_Pro', pts: 8500 },
-        { pos: 5, name: 'Mati_Dices', pts: 7200 },
+        { pos: 1, name: 'tavo_apostador', pts: 12450 },
+        { pos: 2, name: 'facu_dices', pts: 11200 },
+        { pos: 3, name: 'santi_king', pts: 9800 },
+        { pos: 4, name: 'gabi_pro', pts: 8500 },
+        { pos: 5, name: 'mati_club', pts: 7200 },
     ]
 
     useEffect(() => {
         const interval = setInterval(() => {
             setRankingIndex((prev) => (prev + 1) % topPlayers.length)
-        }, 1000)
+        }, 3000)
         return () => clearInterval(interval)
     }, [topPlayers.length])
 
@@ -59,9 +60,11 @@ export function LoginPageContent() {
         }
     }, [searchParams])
 
+    const [showLoginModal, setShowLoginModal] = useState(false)
+
     const handleJoinTournament = () => {
         if (!isUserLoggedIn) {
-            router.push('/login?redirect=/tournaments')
+            setShowLoginModal(true)
         } else {
             router.push('/tournaments/lobby')
         }
@@ -221,7 +224,10 @@ export function LoginPageContent() {
                                         <Trophy className="h-4 w-4" />
                                     </div>
                                     <div className="flex flex-col overflow-hidden">
-                                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Top Ranking</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Puesto {topPlayers[rankingIndex].pos}</span>
+                                            <span className="text-[8px] font-black text-amber-500 uppercase tracking-widest">+{topPlayers[rankingIndex].pts} pts</span>
+                                        </div>
                                         <div className="h-5 relative">
                                             <AnimatePresence mode="wait">
                                                 <motion.span
@@ -362,6 +368,41 @@ export function LoginPageContent() {
                     </div>
                 </div>
             </div>
+            {/* Login Required Modal */}
+            <AnimatePresence>
+                {showLoginModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-zinc-900 border border-white/10 p-8 rounded-[2.5rem] max-w-sm w-full space-y-6 text-center shadow-2xl"
+                        >
+                            <div className="h-16 w-16 bg-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-amber-500">
+                                <Lock className="h-8 w-8" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-black text-white uppercase italic">Iniciá Sesión</h3>
+                                <p className="text-sm text-white/40 font-medium uppercase tracking-wider">Necesitas ser parte del club para inscribirte en torneos oficiales.</p>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Button
+                                    onClick={() => setShowLoginModal(false)}
+                                    className="w-full bg-white text-black font-black uppercase tracking-widest py-4 rounded-2xl"
+                                >
+                                    Entendido
+                                </Button>
+                                <button
+                                    onClick={() => setShowLoginModal(false)}
+                                    className="text-[10px] font-black text-white/20 uppercase tracking-widest hover:text-white transition-colors"
+                                >
+                                    Tal vez más tarde
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     )
 }

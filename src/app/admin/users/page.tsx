@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
-import { Search, MoreVertical, Shield, Ban, CheckCircle2, History, Coins } from "lucide-react"
+import { Search, MoreVertical, Shield, Ban, CheckCircle2, History, Coins, Trash2 } from "lucide-react"
+import { revalidatePath } from "next/cache"
+import Link from "next/link"
 
 export default async function AdminUsersPage() {
     const supabase = createClient()
@@ -8,11 +10,19 @@ export default async function AdminUsersPage() {
         .select('*, player_stats(*)')
         .order('created_at', { ascending: false })
 
+    async function deleteUser(id: string) {
+        'use server'
+        const supabase = createClient()
+        const { error } = await supabase.from('profiles').delete().eq('id', id)
+        if (error) console.error(error)
+        revalidatePath('/admin/users')
+    }
+
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-white uppercase italic">Gestión de <span className="text-amber-500">Usuarios</span></h1>
+                    <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Gestión de <span className="text-amber-500">Usuarios</span></h1>
                     <p className="text-sm text-white/40 font-medium uppercase tracking-widest mt-1">Lista completa de jugadores registrados</p>
                 </div>
 
@@ -87,9 +97,21 @@ export default async function AdminUsersPage() {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-center">
-                                    <button className="rounded-xl p-2 text-white/20 hover:bg-white/5 hover:text-white transition-all">
-                                        <MoreVertical className="h-5 w-5" />
-                                    </button>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Link href={`/admin/users/${user.id}`} className="p-2 rounded-lg bg-white/5 text-white/40 hover:text-white transition-all">
+                                            <History className="h-4 w-4" />
+                                        </Link>
+                                        <form action={async () => {
+                                            'use server'
+                                            if (confirm('¿Estás seguro de eliminar este usuario?')) {
+                                                await deleteUser(user.id)
+                                            }
+                                        }}>
+                                            <button className="p-2 rounded-lg bg-red-500/10 text-red-500/40 hover:bg-red-500 hover:text-white transition-all">
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

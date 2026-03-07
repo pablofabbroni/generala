@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Trophy, User, LogOut, Coins } from 'lucide-react'
+import { Trophy, User, LogOut, Coins, MessageSquare } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { signOut } from '@/lib/actions/auth'
 
@@ -26,19 +26,36 @@ export async function Navbar() {
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="flex items-center gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 shadow-lg shadow-amber-500/5">
-                        <Coins className="h-4 w-4 text-amber-500" />
-                        <span className="text-sm font-black text-amber-500">{profile?.credits || 0}</span>
+                <div className="flex items-center gap-2 sm:gap-6">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-amber-500/20 bg-amber-500/10 px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg shadow-amber-500/5">
+                            <Coins className="h-3.5 w-3.5 sm:h-4 w-4 text-amber-500" />
+                            <span className="text-[10px] sm:text-sm font-black text-amber-500 tabular-nums">{profile?.credits || 0}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg shadow-emerald-500/5">
+                            <span className="text-[10px] sm:text-sm">💵</span>
+                            <span className="text-[10px] sm:text-sm font-black text-emerald-500 tabular-nums">{profile?.usd_balance || '0.00'}</span>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                         <Link
                             href="/friends"
-                            className="hidden sm:flex flex-col items-center gap-0.5 group"
+                            title="Círculo de Amigos"
+                            className="flex flex-col items-center group relative"
                         >
-                            <div className="p-2 rounded-full hover:bg-white/5 transition-all">
-                                <Trophy className="h-4 w-4 text-white/40 group-hover:text-amber-500 transition-colors" />
+                            <div className="p-2 rounded-full hover:bg-white/5 transition-all text-white/40 group-hover:text-amber-500">
+                                <Trophy className="h-5 w-5" />
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/community"
+                            title="Comunidad y Chat"
+                            className="flex flex-col items-center group relative"
+                        >
+                            <div className="p-2 rounded-full hover:bg-white/5 transition-all text-white/40 group-hover:text-amber-500">
+                                <MessageSquare className="h-5 w-5" />
                             </div>
                         </Link>
 

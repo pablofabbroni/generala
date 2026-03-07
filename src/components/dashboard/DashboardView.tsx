@@ -152,7 +152,7 @@ export default function DashboardView({ profile }: Props) {
                         description="Conectate con el club, chateá con otros jugadores y encontrá nuevos rivales en tiempo real."
                         icon={MessageSquare}
                         variant="glass"
-                        onClick={() => router.push("/friends")}
+                        onClick={() => router.push("/community")}
                     />
                 </div>
 

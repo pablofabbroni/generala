@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { PageContainer } from "@/components/layout/PageContainer"
 import SocialView from "@/components/social/SocialView"
 
 export default async function FriendsPage() {
@@ -9,22 +8,26 @@ export default async function FriendsPage() {
 
     if (!user) redirect("/login")
 
-    // Fetch friendships with profiles
+    // Fetch friends (accepted)
     const { data: friendships } = await supabase
         .from('friends')
         .select(`
-            *,
-            requester:profiles!friends_requester_id_fkey(*),
-            addressee:profiles!friends_addressee_id_fkey(*)
+            id,
+            status,
+            requester_id,
+            addressee_id,
+            requester:profiles!requester_id(id, name, alias, image),
+            addressee:profiles!addressee_id(id, name, alias, image)
         `)
         .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
 
     const friends = friendships
         ?.filter(f => f.status === 'accepted')
         .map(f => {
-            const friendProfile = f.requester_id === user.id ? f.addressee : f.requester
+            const isRequester = f.requester_id === user.id
+            const friend = isRequester ? f.addressee : f.requester
             return {
-                ...friendProfile,
+                ...friend,
                 friendship_id: f.id
             }
         }) || []
@@ -37,14 +40,12 @@ export default async function FriendsPage() {
         })) || []
 
     return (
-        <PageContainer className="py-12">
-            <div className="mx-auto max-w-6xl px-4">
-                <SocialView
-                    initialFriends={friends}
-                    initialPending={pending}
-                    currentUserId={user.id}
-                />
-            </div>
-        </PageContainer>
+        <div className="py-20 px-4 max-w-7xl mx-auto">
+            <SocialView
+                initialFriends={friends}
+                initialPending={pending}
+                currentUserId={user.id}
+            />
+        </div>
     )
 }

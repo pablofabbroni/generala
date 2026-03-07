@@ -114,7 +114,7 @@ export default function SocialView({ initialFriends, initialPending, currentUser
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <h1 className="text-4xl font-black text-white uppercase italic tracking-tight">Círculo de <span className="text-amber-500">Amigos</span></h1>
-                    <p className="text-sm text-white/40 font-bold uppercase tracking-widest mt-1">Conectate con otros jugadores</p>
+                    <p className="text-sm text-white/40 font-bold uppercase tracking-widest mt-1">Gente del Club / Amigos Agregados</p>
                 </div>
 
                 <div className="relative group w-full md:w-80">
@@ -266,11 +266,25 @@ export default function SocialView({ initialFriends, initialPending, currentUser
                     </div>
 
                     <div className="rounded-3xl bg-zinc-900/10 border border-white/5 p-6 space-y-4">
-                        <div className="flex items-center gap-2 text-amber-500">
-                            <UserPlus className="h-4 w-4" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Invitar Amigos</span>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-amber-500">
+                                <UserPlus className="h-4 w-4" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Invitar Amigos</span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const link = `${window.location.origin}/register?ref=${currentUserId}`;
+                                    navigator.clipboard.writeText(link);
+                                    alert('¡Link de referido copiado!');
+                                }}
+                                className="text-[10px] font-black uppercase tracking-widest text-emerald-500 hover:text-emerald-400 transition-colors"
+                            >
+                                Copiar Link
+                            </button>
                         </div>
-                        <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider font-medium">Busca a tus amigos por su nombre o alias arriba.</p>
+                        <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider font-medium">
+                            Compartí tu link de referido o busca a tus amigos por su alias arriba para agregarlos al club.
+                        </p>
                     </div>
                 </div>
             </div>

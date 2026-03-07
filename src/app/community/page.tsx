@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { ProfileClient } from "./ProfileClient"
+import { CommunityClient } from "../friends/CommunityClient"
 
-export default async function ProfilePage() {
+export default async function CommunityPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -10,9 +10,9 @@ export default async function ProfilePage() {
 
     const { data: profile } = await supabase
         .from('profiles')
-        .select('*, player_stats(*)')
+        .select('*')
         .eq('id', user.id)
         .single()
 
-    return <ProfileClient profile={profile} />
+    return <CommunityClient profile={profile} />
 }

@@ -114,27 +114,12 @@ export default function GameRoomPage() {
         }
     }, [id, supabase, fetchRoomData])
 
-    // Countdown logic
+    // Auto-start game logic when room is full (replaces countdown)
     useEffect(() => {
         if (room && participants.length === room.max_players && !gameStarted) {
-            if (countdown === null) {
-                setCountdown(10)
-                playSound('chipClink') // Placeholder sound
-            }
-        } else {
-            setCountdown(null)
-        }
-    }, [participants.length, room, gameStarted, countdown, playSound])
-
-    useEffect(() => {
-        if (countdown !== null && countdown > 0) {
-            const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-            if (countdown <= 3) playSound('diceRoll')
-            return () => clearTimeout(timer)
-        } else if (countdown === 0) {
             handleStartGame()
         }
-    }, [countdown, playSound])
+    }, [participants.length, room, gameStarted])
 
     const handleStartGame = async () => {
         setGameStarted(true)
@@ -204,29 +189,6 @@ export default function GameRoomPage() {
                 <div className="h-[800px] w-[800px] bg-amber-500/10 blur-[150px] rounded-full" />
             </div>
 
-            {/* Countdown Overlay when active */}
-            <AnimatePresence>
-                {countdown !== null && countdown > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-black/60 backdrop-blur-md pointer-events-none"
-                    >
-                        <motion.div
-                            key={countdown}
-                            initial={{ scale: 0.5, opacity: 0 }}
-                            animate={{ scale: 1.5, opacity: 1 }}
-                            exit={{ scale: 3, opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="text-[200px] font-black italic text-amber-500 drop-shadow-[0_0_50px_rgba(245,158,11,0.5)]"
-                        >
-                            {countdown}
-                        </motion.div>
-                        <p className="text-xl font-black uppercase tracking-[0.5em] text-white/80 -mt-10">La partida comienza</p>
-                    </motion.div>
-                )}
-            </AnimatePresence>
             <div className="mx-auto max-w-6xl px-4 space-y-12">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="space-y-2">

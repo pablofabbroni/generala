@@ -35,10 +35,11 @@ export default function AdminTournaments() {
         const newTournament = {
             name: formData.get('name'),
             start_at: new Date(formData.get('start_at') as string).toISOString(),
-            end_at: new Date(formData.get('end_at') as string).toISOString(),
+            min_participants: parseInt(formData.get('min_participants') as string),
+            table_size: parseInt(formData.get('table_size') as string),
             entry_fee: parseInt(formData.get('entry_fee') as string),
             prize_pool_amount: parseInt(formData.get('prize_pool_amount') as string),
-            prize_pool_type: 'fixed',
+            prize_pool_type: formData.get('prize_pool_type') as string,
             status: 'scheduled'
         }
 
@@ -48,7 +49,10 @@ export default function AdminTournaments() {
 
         if (!error) {
             setShowCreateModal(false)
+            alert('¡Torneo creado con éxito!')
             fetchTournaments()
+        } else {
+            alert('Error al crear torneo: ' + error.message)
         }
     }
 
@@ -103,10 +107,13 @@ export default function AdminTournaments() {
                                 <h3 className="text-xl font-black text-white uppercase">{t.name}</h3>
                                 <div className="flex items-center gap-2 text-[10px] text-white/40 font-bold mt-1">
                                     <span className={`px-2 py-0.5 rounded-full ${t.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400' :
-                                            t.status === 'running' ? 'bg-emerald-500/20 text-emerald-400' :
-                                                'bg-zinc-500/20 text-zinc-400'
+                                        t.status === 'running' ? 'bg-emerald-500/20 text-emerald-400' :
+                                            'bg-zinc-500/20 text-zinc-400'
                                         }`}>
                                         {t.status.toUpperCase()}
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded-full bg-white/5 text-white/40">
+                                        {t.table_size === 2 ? '1 VS 1' : `MESA DE ${t.table_size}`}
                                     </span>
                                 </div>
                             </div>
@@ -118,6 +125,13 @@ export default function AdminTournaments() {
                                         <span>Inicia</span>
                                     </div>
                                     <span className="text-white/80">{format(new Date(t.start_at), 'd MMM, HH:mm', { locale: es })}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest">
+                                    <div className="flex items-center gap-2 text-white/40">
+                                        <Users className="h-3 w-3" />
+                                        <span>Mín. Jugadores</span>
+                                    </div>
+                                    <span className="text-white/80">{t.min_participants}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest">
                                     <div className="flex items-center gap-2 text-white/40">
@@ -152,23 +166,37 @@ export default function AdminTournaments() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Inicia</label>
-                                    <input name="start_at" type="datetime-local" required className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-[10px] text-white focus:border-amber-500 outline-none" />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Termina</label>
-                                    <input name="end_at" type="datetime-local" required className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-[10px] text-white focus:border-amber-500 outline-none" />
+                                <div className="space-y-1 col-span-2">
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Fecha y Hora de Inicio</label>
+                                    <input name="start_at" type="datetime-local" required className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Costo Entrada</label>
-                                    <input name="entry_fee" type="number" required defaultValue="50" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none" />
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Mín. Participantes</label>
+                                    <input name="min_participants" type="number" required defaultValue="8" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none" />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Premio Total</label>
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Modo de Juego</label>
+                                    <select name="table_size" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none">
+                                        <option value="2">1 VS 1</option>
+                                        <option value="3">MESAS DE 3</option>
+                                        <option value="4">MESAS DE 4</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Tipo de Premio</label>
+                                    <select name="prize_pool_type" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none">
+                                        <option value="fixed">FIJO (Monto estático)</option>
+                                        <option value="sum">DINÁMICO (Suma de entradas)</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Monto Fijo / Base</label>
                                     <input name="prize_pool_amount" type="number" required defaultValue="1000" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none" />
                                 </div>
                             </div>

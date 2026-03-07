@@ -18,8 +18,11 @@ export default async function AdminRoomsPage() {
             level: formData.get('level') as string,
             variant: formData.get('variant') as string,
             max_players: parseInt(formData.get('max_players') as string),
+            table_size: parseInt(formData.get('table_size') as string),
+            min_participants: parseInt(formData.get('min_participants') as string),
             entry_fee: parseInt(formData.get('entry_fee') as string),
             start_at: formData.get('start_at') ? new Date(formData.get('start_at') as string).toISOString() : null,
+            status: 'waiting',
             is_active: true
         }
 
@@ -28,10 +31,17 @@ export default async function AdminRoomsPage() {
         revalidatePath('/admin/rooms')
     }
 
+    async function cleanupRooms() {
+        'use server'
+        const supabase = createClient()
+        await supabase.rpc('cleanup_inactive_rooms')
+        revalidatePath('/admin/rooms')
+    }
+
     async function toggleRoomStatus(id: string, currentStatus: boolean) {
         'use server'
         const supabase = createClient()
-        await supabase.from('rooms').update({ is_active: !currentStatus }).eq('id', id)
+        await supabase.from('profiles').update({ is_active: !currentStatus }).eq('id', id)
         revalidatePath('/admin/rooms')
     }
 
@@ -43,10 +53,18 @@ export default async function AdminRoomsPage() {
                     <p className="text-sm text-white/40 font-medium uppercase tracking-widest mt-1">Crea y administra las mesas de juego</p>
                 </div>
 
-                <button className="flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-black hover:bg-amber-400 transition-all">
-                    <Plus className="h-4 w-4" />
-                    Nueva Sala
-                </button>
+                <div className="flex gap-4">
+                    <form action={cleanupRooms}>
+                        <button type="submit" className="flex items-center gap-2 rounded-2xl bg-white/5 border border-white/10 px-6 py-3 text-xs font-black uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition-all">
+                            <Trash2 className="h-4 w-4" />
+                            Limpiar Inactivas
+                        </button>
+                    </form>
+                    <button className="flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-black hover:bg-amber-400 transition-all">
+                        <Plus className="h-4 w-4" />
+                        Nueva Sala
+                    </button>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -81,6 +99,21 @@ export default async function AdminRoomsPage() {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Mín. Jugadores</label>
+                                <input name="min_participants" type="number" defaultValue="2" className="w-full rounded-xl border border-white/5 bg-zinc-950/50 p-3 text-sm text-white focus:border-amber-500/50 outline-none" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Tamaño Mesa</label>
+                                <select name="table_size" className="w-full rounded-xl border border-white/5 bg-zinc-950/50 p-3 text-sm text-white focus:border-amber-500/50 outline-none">
+                                    <option value="2">1 VS 1</option>
+                                    <option value="3">Mesa de 3</option>
+                                    <option value="4">Mesa de 4</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
                                 <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Jugadores Máx.</label>
                                 <input name="max_players" type="number" defaultValue="4" className="w-full rounded-xl border border-white/5 bg-zinc-950/50 p-3 text-sm text-white focus:border-amber-500/50 outline-none" />
                             </div>
@@ -96,7 +129,7 @@ export default async function AdminRoomsPage() {
                         </div>
 
                         <button type="submit" className="w-full rounded-xl bg-white py-4 text-xs font-black uppercase tracking-widest text-black hover:bg-amber-500 transition-all">
-                            Crear Sala
+                            Crear Sala Ahora
                         </button>
                     </form>
                 </div>

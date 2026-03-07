@@ -107,9 +107,13 @@ export default function TournamentLobby() {
                                                 <div className="px-3 py-1 bg-emerald-500 text-zinc-950 text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
                                                     Inscripto
                                                 </div>
-                                            ) : (
+                                            ) : t.registration_open ? (
                                                 <div className="px-3 py-1 bg-amber-500/10 text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-amber-500/20">
                                                     Abierto
+                                                </div>
+                                            ) : (
+                                                <div className="px-3 py-1 bg-white/5 text-white/20 text-[10px] font-black uppercase tracking-widest rounded-full border border-white/10">
+                                                    Próximamente
                                                 </div>
                                             )}
                                         </div>
@@ -167,9 +171,13 @@ export default function TournamentLobby() {
                                                 <Button disabled className="bg-white/5 text-white/40 font-black uppercase tracking-widest px-8">
                                                     Ya estás dentro
                                                 </Button>
-                                            ) : (
+                                            ) : t.registration_open ? (
                                                 <Button onClick={() => handleInscribe(t)} className="bg-white hover:bg-amber-500 text-zinc-950 font-black uppercase tracking-widest px-8 shadow-xl shadow-white/5 transition-all hover:scale-105 active:scale-95">
                                                     Inscribirme Ahora
+                                                </Button>
+                                            ) : (
+                                                <Button disabled className="bg-white/5 text-white/20 font-black uppercase tracking-widest px-8">
+                                                    Próximamente
                                                 </Button>
                                             )}
                                         </div>
