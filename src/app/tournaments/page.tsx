@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/client'
 import { Trophy, Calendar, Users, DollarSign, ArrowLeft, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { TournamentCountdown } from '@/components/tournaments/TournamentCountdown'
-import { Navbar } from '@/components/layout/Navbar'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
@@ -74,7 +73,6 @@ export default function TournamentLobby() {
 
     return (
         <main className="min-h-screen bg-[#09090b]">
-            <Navbar />
             <PageContainer>
                 <div className="py-12 space-y-12">
                     <div className="flex items-center justify-between">

@@ -1,7 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 
 export function createClient() {
+    // Dynamically import cookies to ensure it's only ever referenced in a server context
+    // This prevents build errors when server actions are imported into client components
+    const { cookies } = require('next/headers')
     const cookieStore = cookies()
 
     return createServerClient(
