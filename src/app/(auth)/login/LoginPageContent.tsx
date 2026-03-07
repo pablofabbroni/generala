@@ -20,6 +20,22 @@ export function LoginPageContent() {
     const router = useRouter()
     const error = searchParams.get('error')
     const setGameMode = useGameStore((s) => s.setGameMode)
+    const [rankingIndex, setRankingIndex] = useState(0)
+
+    const topPlayers = [
+        { pos: 1, name: 'Tavo_Apostador', pts: 12450 },
+        { pos: 2, name: 'Facu_Dices', pts: 11200 },
+        { pos: 3, name: 'Santi_King', pts: 9800 },
+        { pos: 4, name: 'Gabi_Pro', pts: 8500 },
+        { pos: 5, name: 'Mati_Dices', pts: 7200 },
+    ]
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setRankingIndex((prev) => (prev + 1) % topPlayers.length)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [topPlayers.length])
 
     // Example logic to check if user is logged in
     // This will be replaced by actual supabase session check
@@ -75,7 +91,7 @@ export function LoginPageContent() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase italic leading-none">
+                        <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase italic leading-none">
                             Generala <span className="text-amber-500 text-glow-amber">Club</span>
                         </h1>
                         <p className="mt-4 text-sm md:text-lg font-bold tracking-[0.3em] text-white/40 uppercase">
@@ -101,7 +117,7 @@ export function LoginPageContent() {
                             />
 
                             {/* Proactive Placeholders for requested cards */}
-                            <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-8 flex flex-col justify-between group transition-all hover:border-white/20 h-full">
+                            <div className="hidden md:flex relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-white/5 p-8 flex-col justify-between group transition-all hover:border-white/20 h-full">
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-3 text-amber-500">
                                         <Users className="h-5 w-5" />
@@ -125,7 +141,7 @@ export function LoginPageContent() {
 
                         {/* Extra requested cards: Ranking & Tournaments */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 space-y-6">
+                            <div className="hidden md:block rounded-[2.5rem] border border-white/10 bg-white/5 p-8 space-y-6">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2 text-white/60">
                                         <Trophy className="h-4 w-4" />
@@ -134,11 +150,7 @@ export function LoginPageContent() {
                                     <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Semanal</span>
                                 </div>
                                 <div className="space-y-3">
-                                    {[
-                                        { pos: 1, name: 'Tavo_Apostador', pts: 12450 },
-                                        { pos: 2, name: 'Facu_Dices', pts: 11200 },
-                                        { pos: 3, name: 'Santi_King', pts: 9800 },
-                                    ].map((player) => (
+                                    {topPlayers.map((player) => (
                                         <div key={player.pos} className="flex items-center justify-between p-3 rounded-2xl bg-zinc-950/50 border border-white/5">
                                             <div className="flex items-center gap-3">
                                                 <span className={player.pos === 1 ? 'text-amber-500 font-black' : 'text-white/20 font-black'}>{player.pos}</span>
@@ -187,7 +199,47 @@ export function LoginPageContent() {
                     </div>
 
                     {/* Login Form (Right/Bottom) */}
-                    <div className="lg:col-span-5 order-1 lg:order-2">
+                    <div className="lg:col-span-5 order-1 lg:order-2 space-y-6">
+                        {/* Mobile Mini Cards Row */}
+                        <div className="flex lg:hidden gap-4">
+                            <div className="flex-1 rounded-3xl border border-white/10 bg-white/5 p-4 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
+                                        <User className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-xl font-black text-white leading-none">124</span>
+                                        <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mt-1">ON</span>
+                                    </div>
+                                </div>
+                                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            </div>
+
+                            <div className="flex-1 rounded-3xl border border-white/10 bg-white/5 p-4 flex items-center justify-between overflow-hidden">
+                                <div className="flex items-center gap-3 w-full">
+                                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500 shrink-0">
+                                        <Trophy className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Top Ranking</span>
+                                        <div className="h-5 relative">
+                                            <AnimatePresence mode="wait">
+                                                <motion.span
+                                                    key={rankingIndex}
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -10 }}
+                                                    className="absolute inset-0 text-xs font-black text-white truncate"
+                                                >
+                                                    {topPlayers[rankingIndex].name}
+                                                </motion.span>
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
