@@ -89,10 +89,11 @@ export function ScoreTable({
             {categories.map((cat, catIdx) => (
               <React.Fragment key={cat}>
                 <div className={cn(
-                  "sticky left-0 z-20 px-4 py-3.5 flex items-center border-b border-white/10 transition-all bg-zinc-950/90 backdrop-blur-md shadow-xl",
-                  catIdx % 2 === 0 ? "bg-zinc-950/95" : "bg-zinc-950/90"
+                  "sticky left-0 z-20 px-4 py-3.5 flex items-center border-b border-white/10 transition-all bg-zinc-950/90 backdrop-blur-md shadow-xl group/row",
+                  catIdx % 2 === 0 ? "bg-zinc-950/95" : "bg-zinc-950/90",
+                  "hover:bg-amber-500/5"
                 )}>
-                  <div className="text-[10px] font-black text-white uppercase tracking-tight leading-none">
+                  <div className="text-[10px] font-black text-white uppercase tracking-tight leading-none group-hover/row:text-amber-500 transition-colors">
                     {categoryMeta[cat].label}
                   </div>
                 </div>
@@ -105,10 +106,11 @@ export function ScoreTable({
                     <div
                       key={p.id}
                       className={cn(
-                        "px-2 py-3 border-b border-white/10 border-l border-white/5 transition-all text-center",
+                        "px-2 py-3 border-b border-white/10 border-l border-white/5 transition-all text-center group/row-cell",
                         p.id === activePlayerId
-                          ? (catIdx % 2 === 0 ? "bg-amber-500/[0.12]" : "bg-amber-500/10")
-                          : (catIdx % 2 === 0 ? "bg-white/[0.04]" : "bg-transparent")
+                          ? (catIdx % 2 === 0 ? "bg-amber-500/[0.12] shadow-[inset_0_0_20px_rgba(245,158,11,0.05)]" : "bg-amber-500/10")
+                          : (catIdx % 2 === 0 ? "bg-white/[0.04]" : "bg-transparent"),
+                        "group-hover/row:bg-amber-500/5"
                       )}
                     >
                       <ScoreCell

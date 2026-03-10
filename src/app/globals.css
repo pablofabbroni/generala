@@ -21,37 +21,38 @@ body {
 
 @layer utilities {
   .casino-felt {
-    background-color: #0d3d2e;
+    background-color: #073b2c;
     background-image:
-      radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%),
+      radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 80%),
       url("https://www.transparenttextures.com/patterns/felt.png");
     position: relative;
-    overflow: hidden;
-    /* Keep this from the original */
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
   }
 
   .casino-vignette {
-    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.6) 100%);
+    background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.7) 100%);
     pointer-events: none;
   }
 
   .wood-frame {
     background:
-      linear-gradient(to right, rgba(0, 0, 0, 0.4), transparent, rgba(0, 0, 0, 0.4)),
+      linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
       url("https://www.transparenttextures.com/patterns/dark-wood.png"),
-      linear-gradient(to bottom, #2d1b0d, #1a0f08);
-    border: 8px solid #3d2310;
+      #2d1b0d;
+    border: 12px solid #3d2310;
     box-shadow:
-      inset 0 0 40px rgba(0, 0, 0, 0.8),
-      0 20px 50px rgba(0, 0, 0, 0.5);
+      inset 0 0 40px rgba(0, 0, 0, 0.9),
+      0 30px 60px rgba(0, 0, 0, 0.6),
+      0 0 0 4px #1a0f08;
+    position: relative;
   }
 
   .text-glow-amber {
-    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
   }
 
-  .border-glow-amber {
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+  .text-glow-emerald {
+    text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
   }
 
   .scrollbar-hide {

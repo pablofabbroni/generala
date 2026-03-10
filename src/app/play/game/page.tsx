@@ -216,16 +216,7 @@ export default function GamePage() {
         </div>
       )}
 
-      {/* Mobile Orientation Warning */}
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-zinc-950 p-6 text-center landscape:hidden sm:hidden">
-        <div className="mb-6 rounded-full bg-amber-500/20 p-6 animate-pulse">
-          <svg className="h-12 w-12 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-          </svg>
-        </div>
-        <h2 className="text-xl font-black text-white uppercase italic">Girá tu dispositivo</h2>
-        <p className="mt-2 text-sm text-white/60">Para disfrutar la mejor experiencia de casino, jugá en modo horizontal.</p>
-      </div>
+      {/* Mobile Orientation Warning removed as requested */}
 
       <PageContainer className="space-y-6 pb-28 max-w-[1600px] mx-auto">
         {/* Scroll anchor for auto-scroll on CPU turn */}

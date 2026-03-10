@@ -35,16 +35,16 @@ export function Dice3DCanvas() {
                 <React.Suspense fallback={null}>
                     <PerspectiveCamera makeDefault position={[0, 11, 0]} rotation={[-Math.PI / 2, 0, 0]} fov={45} />
 
-                    <ambientLight intensity={0.7} />
-                    <spotLight position={[10, 15, 10]} angle={0.3} penumbra={1} intensity={1.5} castShadow />
-                    <pointLight position={[-10, 8, -10]} intensity={0.5} color="#f59e0b" />
+                    <ambientLight intensity={1.0} />
+                    <spotLight position={[10, 20, 10]} angle={0.4} penumbra={1} intensity={2.5} castShadow />
+                    <pointLight position={[-10, 12, -10]} intensity={1.0} color="#f59e0b" />
 
-                    <Physics gravity={[0, -40, 0]}>
+                    <Physics gravity={[0, -50, 0]}>
                         {/* Floor (Matches Felt) */}
-                        <RigidBody type="fixed" colliders="cuboid" restitution={0.1} friction={1}>
+                        <RigidBody type="fixed" colliders="cuboid" restitution={0.1} friction={2}>
                             <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                                 <planeGeometry args={[50, 50]} />
-                                <meshStandardMaterial color="#0d3d2e" roughness={1} metalness={0} />
+                                <meshStandardMaterial color="#0d5c46" roughness={1} metalness={0} />
                             </mesh>
                         </RigidBody>
 

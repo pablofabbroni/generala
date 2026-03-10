@@ -40,7 +40,13 @@ export default function AdminTournaments() {
             entry_fee: parseInt(formData.get('entry_fee') as string),
             prize_pool_amount: parseInt(formData.get('prize_pool_amount') as string),
             prize_pool_type: formData.get('prize_pool_type') as string,
-            status: 'scheduled'
+            status: 'scheduled',
+            variants: {
+                minorStraight: formData.get('variant_minorStraight') === 'on',
+                doubleGenerala: formData.get('variant_doubleGenerala') === 'on',
+                upperBonus63: formData.get('variant_upperBonus63') === 'on',
+                chance: formData.get('variant_chance') === 'on'
+            }
         }
 
         const { error } = await supabase
@@ -198,6 +204,28 @@ export default function AdminTournaments() {
                                 <div className="space-y-1">
                                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Monto Fijo / Base</label>
                                     <input name="prize_pool_amount" type="number" required defaultValue="1000" className="w-full bg-zinc-950 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-amber-500 outline-none" />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2 pt-2">
+                                <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Variantes de Juego</label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <label className="flex items-center gap-2 p-3 rounded-xl bg-zinc-950 border border-white/5 hover:border-amber-500/50 cursor-pointer transition-all">
+                                        <input type="checkbox" name="variant_minorStraight" className="w-4 h-4 accent-amber-500" />
+                                        <span className="text-[10px] font-bold text-white/60 uppercase">Escalera Menor</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 p-3 rounded-xl bg-zinc-950 border border-white/5 hover:border-amber-500/50 cursor-pointer transition-all">
+                                        <input type="checkbox" name="variant_doubleGenerala" className="w-4 h-4 accent-amber-500" />
+                                        <span className="text-[10px] font-bold text-white/60 uppercase">Generala Doble</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 p-3 rounded-xl bg-zinc-950 border border-white/5 hover:border-amber-500/50 cursor-pointer transition-all">
+                                        <input type="checkbox" name="variant_upperBonus63" defaultChecked className="w-4 h-4 accent-amber-500" />
+                                        <span className="text-[10px] font-bold text-white/60 uppercase">Bonus 63</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 p-3 rounded-xl bg-zinc-950 border border-white/5 hover:border-amber-500/50 cursor-pointer transition-all">
+                                        <input type="checkbox" name="variant_chance" defaultChecked className="w-4 h-4 accent-amber-500" />
+                                        <span className="text-[10px] font-bold text-white/60 uppercase">Chance</span>
+                                    </label>
                                 </div>
                             </div>
 

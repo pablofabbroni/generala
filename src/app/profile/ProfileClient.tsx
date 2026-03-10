@@ -129,7 +129,7 @@ export function ProfileClient({ profile: initialProfile }: Props) {
                             </div>
                             <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-emerald-500">
                                 <span className="text-lg">💵</span>
-                                <span className="text-sm font-black tabular-nums">{profile?.usd_balance || '0.00'} USD</span>
+                                <span className="text-sm font-black tabular-nums">{profile?.usd_balance || '0.00'}</span>
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@ export function ProfileClient({ profile: initialProfile }: Props) {
                         <h2 className="text-xl font-black uppercase italic tracking-tight">Gana Dinero Invitando</h2>
                     </div>
                     <p className="text-sm text-white/50 max-w-2xl leading-relaxed">
-                        Comparte tu link único con amigos. Por cada nuevo usuario que se registre con tu código, recibirás <span className="text-emerald-500 font-bold">$5.00 USD</span> de regalo.
+                        Comparte tu link único con amigos. Por cada nuevo usuario que se registre con tu código, recibirás <span className="text-emerald-500 font-bold">$5.00</span> de regalo.
                     </p>
 
                     <div className="flex flex-col md:flex-row gap-4 items-center">

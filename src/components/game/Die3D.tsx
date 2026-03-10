@@ -170,19 +170,19 @@ export function Die3D({ value, rollKey, dieIndex, onStable, locked }: Die3DProps
             ref={rigidBody}
             position={spawnOffset}
             colliders="cuboid"
-            restitution={0.05}
-            friction={2.0}
-            linearDamping={3.5}
-            angularDamping={4.0}
+            restitution={0.02}
+            friction={10.0}
+            linearDamping={4.0}
+            angularDamping={5.0}
             onCollisionEnter={handleCollision}
             type={locked ? "fixed" : "dynamic"}
         >
-            <RoundedBox args={[1, 1, 1]} radius={0.12} smoothness={5} castShadow receiveShadow>
+            <RoundedBox args={[1, 1, 1]} radius={0.25} smoothness={10} castShadow receiveShadow>
                 <meshStandardMaterial
-                    color={locked ? "#fbbf24" : "#ffffff"}
-                    roughness={0.05}
-                    metalness={0.1}
-                    envMapIntensity={1.5}
+                    color={locked ? "#fbbf24" : "#f0f0f0"}
+                    roughness={0.01}
+                    metalness={0.2}
+                    envMapIntensity={2.5}
                 />
                 <DieDots />
             </RoundedBox>
